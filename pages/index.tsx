@@ -1,15 +1,27 @@
-import Link from 'next/link'
-import Layout from '../components/Layout'
+import { gql, useQuery } from '@apollo/client'
+import { User } from 'nexus-prisma'
 
-const IndexPage = () => (
-  <Layout title="Home | Next.js + TypeScript Example">
-    <h1>Hello Next.js 👋</h1>
-    <p>
-      <Link href="/about">
-        <a>About</a>
-      </Link>
-    </p>
-  </Layout>
-)
+export const USERS_QUERY = gql`
+  query {
+    users {
+      id
+      name
+    }
+  }
+`;
+
+const IndexPage = () => {
+  const { loading, error, data } = useQuery<{ users: typeof User[]}>(USERS_QUERY)
+
+  console.log('loading', loading)
+  console.log('error', error)
+  console.log('data', data?.users)
+
+  return (
+    <div>
+      <h1>Hello Next.js 👋</h1>
+    </div>
+  )
+}
 
 export default IndexPage
