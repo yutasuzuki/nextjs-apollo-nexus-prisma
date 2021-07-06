@@ -1,27 +1,34 @@
-import { gql, useQuery } from '@apollo/client'
-import { User } from 'nexus-prisma'
+import React, { useCallback } from 'react'
+import Link from 'next/link'
+import { withApollo, ApolloProps } from '../libs/withApollo'
 
-export const USERS_QUERY = gql`
-  query {
-    users {
-      id
-      name
-    }
-  }
-`;
+interface Props extends ApolloProps {}
 
-const IndexPage = () => {
-  const { loading, error, data } = useQuery<{ users: typeof User[]}>(USERS_QUERY)
-
-  console.log('loading', loading)
-  console.log('error', error)
-  console.log('data', data?.users)
+const Page: React.FC<Props> = (props) => {
+  console.log(props)
 
   return (
     <div>
-      <h1>Hello Next.js 👋</h1>
+      {props.data.users?.map((user, index) => {
+        return (
+          <div key={index}>
+            <p>{user.$name}</p>
+            <p>{user.$description}</p>
+            <p>{user.name}</p>
+          </div>
+        )
+      })}
+      <div>
+        <div>
+          <Link href="/auth/signup"><a>新規登録</a></Link>
+        </div>
+        <div>
+          <Link href="/auth/signin"><a>ログイン</a></Link>
+        </div>
+      </div>
     </div>
   )
 }
 
-export default IndexPage
+
+export default withApollo(Page)

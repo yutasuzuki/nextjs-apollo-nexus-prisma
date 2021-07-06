@@ -16,6 +16,8 @@ generator nexusPrisma {
 
 model User {
   id      Int      @default(autoincrement()) @id
+  email   String
+  token   String?
   name    String?
   image   String?
 }
