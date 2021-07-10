@@ -11,10 +11,6 @@ export type ApolloProps = {
 
 export const USERS_QUERY = gql`
   query {
-    users {
-      id
-      name
-    }
     user(id: 1) {
       id
       name

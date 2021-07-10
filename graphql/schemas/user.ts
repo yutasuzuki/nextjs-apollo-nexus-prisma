@@ -27,6 +27,14 @@ export const Auth = objectType({
   }
 })
 
+export const UserAuth = objectType({
+  name: 'UserAuth',
+  description: U.$description,
+  definition(t) {
+    t.boolean('login')
+  }
+})
+
 export const UserQuery = extendType({
   type: 'Query',
   definition(t) {
@@ -42,14 +50,14 @@ export const UserQuery = extendType({
 export const UserMutation = extendType({
   type: 'Mutation',
   definition(t) {
-    t.field('updateUser', {
+    t.field('update', {
       type: Auth,
       args: {
         // id: nonNull(intArg()),
         name: nonNull(stringArg()),
       },
       resolve(_root, _args, ctx) {
-        console.log('updateUser')
+        console.log('update')
         console.log('_root', _root)
         console.log('_args', _args)
         console.log('ctx', ctx)
@@ -64,10 +72,8 @@ export const UserMutation = extendType({
       },
     }),
     t.field('signupUser', {
-      type: U.$name,
+      type: UserAuth,
       args: {
-        // id: nonNull(intArg()),
-        name: nonNull(stringArg()),
         email: nonNull(stringArg()),
         password: nonNull(stringArg()),
       },
@@ -75,11 +81,7 @@ export const UserMutation = extendType({
         console.log(_root)
         console.log(args)
         // console.log(ctx.prisma)
-        return {
-          id: 1,
-          name: 'hoge',
-          email: 'hoge'
-        }
+        return { login: true }
       },
     })
   },

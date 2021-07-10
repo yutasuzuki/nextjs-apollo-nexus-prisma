@@ -1,14 +1,16 @@
 import { prisma } from "./client";
 import { PrismaClient } from "@prisma/client"
+import { NextApiRequest, NextApiResponse } from "next";
 
 export interface Context {
   prisma: PrismaClient
-  auth: string
+  sadmin: string
 }
 
 export const context = ({ req }) => {
-  // const token = localStorage.getItem('token')
-  // req.headers.authorization = `Bearer ${token}`
-  // console.log('req.req', req)
-  return { prisma, auth: 'hoge' };
+  const sadmin = req.headers.sadmin
+  return {
+    prisma,
+    sadmin
+  };
 }

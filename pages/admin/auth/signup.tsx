@@ -5,16 +5,17 @@ import { auth } from 'libs/firebase'
 import { gql, useMutation } from '@apollo/client'
 
 const SIGNUP_USER = gql`
-  mutation signupUser($name: String!, $email: String!, $password: String!) {
-    signupUser(name: $name, email: $email, password: $password) {
-      name
+  mutation signupUser($email: String!, $password: String!) {
+    signupUser(email: $email, password: $password) {
+      login
+      email
     }
   }
 `;
 
 const UPDATE_USER = gql`
-  mutation hoge($name: String!) {
-    updateUser(name: $name) {
+  mutation ($name: String!) {
+    update(name: $name) {
       text
       user {
         name
@@ -42,6 +43,7 @@ const Page: React.FC<Props> = (props) => {
 
   const [updateUser, { data: s }] = useMutation(UPDATE_USER, {
     onCompleted(d) {
+      console.log('onCompleted')
       console.log(d)
     }
   });
