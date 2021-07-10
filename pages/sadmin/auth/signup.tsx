@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { auth } from 'libs/firebase'
 import { gql, useMutation } from '@apollo/client'
+import { withSadmin, SadminProps } from 'libs/withSadmin'
 
 const SIGNUP_SADMIN = gql`
   mutation SignupSadmin($token: String!) {
@@ -10,9 +11,10 @@ const SIGNUP_SADMIN = gql`
   }
 `;
 
-type Props = {}
+interface Props extends SadminProps {}
 
-const Page: React.FC<Props> = (props) => {
+const Page: React.FC<Props> = ({ data: { sadmin } }) => {
+  console.log('sadmin', sadmin)
   const router = useRouter()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -21,11 +23,10 @@ const Page: React.FC<Props> = (props) => {
   const [signupSadmin, { data }] = useMutation(SIGNUP_SADMIN, {
     onCompleted({ signupSadmin }) {
       if (signupSadmin?.token) {
-        console.log('onCompleted!!', signupSadmin)
         localStorage.setItem('sadmin', signupSadmin.token)
       }
     }
-  });
+  })
 
   console.log('data', data)
 
@@ -74,4 +75,4 @@ const Page: React.FC<Props> = (props) => {
   )
 }
 
-export default Page
+export default withSadmin(Page)

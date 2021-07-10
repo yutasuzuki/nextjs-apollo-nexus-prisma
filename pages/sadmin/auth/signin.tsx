@@ -1,36 +1,55 @@
 import React, { useState, useCallback } from 'react'
-import { useRouter } from 'next/router'
 import Link from 'next/link'
+import { useRouter } from 'next/router'
 import { auth } from 'libs/firebase'
+import { gql, useMutation } from '@apollo/client'
+import { withSadmin, SadminProps } from 'libs/withSadmin'
 
-type Props = {}
+const SIGNUP_SADMIN = gql`
+  mutation SignupSadmin($token: String!) {
+    signupSadmin(token: $token) { id uid email token }
+  }
+`;
 
-const Page: React.FC<Props> = (props) => {
+interface Props extends SadminProps {}
+
+const Page: React.FC<Props> = ({ data: { sadmin } }) => {
+  console.log('sadmin', sadmin)
   const router = useRouter()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
 
-  const _handleOnSubmit = useCallback(async (event) => {
+  const [signupSadmin, { data }] = useMutation(SIGNUP_SADMIN, {
+    onCompleted({ signupSadmin }) {
+      if (signupSadmin?.token) {
+        localStorage.setItem('sadmin', signupSadmin.token)
+      }
+    }
+  })
+
+  console.log('data', data)
+
+  const _handleOnSubmit = useCallback(async (e) => {
     if (loading) return
     setLoading(true)
-    event.preventDefault()
+    e.preventDefault()
     try {
       const res = await auth.signInWithEmailAndPassword(email, password)
       if (res) {
         const token = await res.user.getIdToken()
-        const result = await fetch('/api/users/auth/signin',{ headers: { authorization: token }}).then(res => res.json())
-        if (result.error) {
-          setLoading(false)
-        }
-        if (result.user) {
-          router.push('/mypage')
-        }
+        console.log(token)
+        signupSadmin({
+          variables: { token }
+        })
       }
-    } catch(error) {
+      setLoading(false)
+    } catch (error) {
+      console.error(error)
       setLoading(false)
     }
   }, [email, password, loading])
+
 
   return (
     <div>
@@ -58,4 +77,4 @@ const Page: React.FC<Props> = (props) => {
   )
 }
 
-export default Page
+export default withSadmin(Page)
