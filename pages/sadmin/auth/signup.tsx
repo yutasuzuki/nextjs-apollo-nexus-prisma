@@ -4,6 +4,7 @@ import { useRouter } from 'next/router'
 import { auth } from 'libs/firebase'
 import { gql, useMutation } from '@apollo/client'
 import { withSadmin, SadminProps } from 'libs/withSadmin'
+import { LayoutSadminAuth } from 'components/LayoutSadminAuth/LayoutSadminAuth'
 
 const SIGNUP_SADMIN = gql`
   mutation SignupSadmin($token: String!) {
@@ -13,26 +14,22 @@ const SIGNUP_SADMIN = gql`
 
 interface Props extends SadminProps {}
 
-const Page: React.FC<Props> = ({ data: { sadmin } }) => {
-  console.log('sadmin', sadmin)
+const Page: React.FC<Props> = ({ data }) => {
   const router = useRouter()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-  const [loading, setLoading] = useState(false)
 
-  const [signupSadmin, { data }] = useMutation(SIGNUP_SADMIN, {
+  const [signupSadmin] = useMutation(SIGNUP_SADMIN, {
     onCompleted({ signupSadmin }) {
       if (signupSadmin?.token) {
         localStorage.setItem('sadmin', signupSadmin.token)
+        router.push('/sadmin')
       }
     }
   })
 
-  console.log('data', data)
 
   const _handleOnSubmit = useCallback(async (e) => {
-    if (loading) return
-    setLoading(true)
     e.preventDefault()
     try {
       const res = await auth.createUserWithEmailAndPassword(email, password)
@@ -42,15 +39,13 @@ const Page: React.FC<Props> = ({ data: { sadmin } }) => {
           variables: { token }
         })
       }
-      setLoading(false)
     } catch (error) {
       console.error(error)
-      setLoading(false)
     }
-  }, [email, password, loading])
+  }, [email, password])
 
   return (
-    <div>
+    <LayoutSadminAuth data={data}>
       <h1>Sadmin</h1>
       <div>新規登録</div>
       <div>
@@ -71,7 +66,7 @@ const Page: React.FC<Props> = ({ data: { sadmin } }) => {
       <div>
         <Link href="/sadmin/auth/signin"><a>ログイン</a></Link>
       </div>
-    </div>
+    </LayoutSadminAuth>
   )
 }
 

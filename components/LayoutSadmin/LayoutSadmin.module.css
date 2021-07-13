@@ -1,0 +1,46 @@
+.container {
+}
+
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 60px;
+  background-color: #fff;
+  padding: 0 12px;
+  border-bottom: #f4f4f4 solid 1px;
+  z-index: 1;
+}
+
+.logo a {
+  font-size: 14px;
+  color: #000;
+  font-weight: bold;
+}
+
+.aside {
+  position: fixed;
+  top: 60px;
+  left: 0;
+  bottom: 0;
+  width: 180px;
+  background-color: #fff;
+  border-right: #f4f4f4 solid 1px;
+}
+
+.menu {
+  margin-top: 12px;
+}
+
+.menu li a {
+  display: block;
+  padding: 18px 24px;
+}
+
+.main {
+  padding: 84px 24px 60px 204px;
+}

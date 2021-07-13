@@ -1,23 +1,12 @@
-import React, { useCallback } from 'react'
+import React from 'react'
 import Link from 'next/link'
-import { withApollo, ApolloProps } from '../libs/withApollo'
 
-interface Props extends ApolloProps {}
+interface Props {}
 
 const Page: React.FC<Props> = (props) => {
-  console.log(props)
 
   return (
     <div>
-      {props.data.users?.map((user, index) => {
-        return (
-          <div key={index}>
-            <p>{user.$name}</p>
-            <p>{user.$description}</p>
-            <p>{user.name}</p>
-          </div>
-        )
-      })}
       <div>
         <section>
           <h2>Admin</h2>
@@ -43,4 +32,4 @@ const Page: React.FC<Props> = (props) => {
 }
 
 
-export default withApollo(Page)
+export default Page

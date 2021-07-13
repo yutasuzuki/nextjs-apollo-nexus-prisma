@@ -1,14 +1,11 @@
 import React from 'react'
 import { gql, useQuery } from '@apollo/client'
 import { Sadmin } from 'nexus-prisma'
-import { graphql } from '@apollo/client/react/hoc'
+import { graphql, DataProps } from '@apollo/client/react/hoc'
 
-export type SadminProps = {
-  data: {
-    sadmin: typeof Sadmin
-  }
-}
-
+export interface SadminProps extends DataProps<{
+  sadmin: typeof Sadmin
+}> {}
 
 export const SADMIN_QUERY = gql`
   query {
