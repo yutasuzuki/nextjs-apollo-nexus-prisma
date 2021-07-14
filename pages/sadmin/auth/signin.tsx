@@ -34,7 +34,6 @@ const Page: React.FC<Props> = ({ data }) => {
       const res = await auth.signInWithEmailAndPassword(email, password)
       if (res) {
         const token = await res.user.getIdToken()
-        console.log(token)
         signupSadmin({
           variables: { token }
         })
