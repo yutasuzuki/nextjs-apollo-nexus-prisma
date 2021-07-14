@@ -6,9 +6,9 @@ import { gql, useMutation } from '@apollo/client'
 import { withSadmin, SadminProps } from 'libs/withSadmin'
 import { LayoutSadminAuth } from 'components/LayoutSadminAuth/LayoutSadminAuth'
 
-const SIGNUP_SADMIN = gql`
-  mutation SignupSadmin($token: String!) {
-    signupSadmin(token: $token) { id uid email token }
+const SIGNIN_SADMIN = gql`
+  mutation SigninSadmin($token: String!) {
+    signinSadmin(token: $token) { id uid email token }
   }
 `;
 
@@ -19,10 +19,10 @@ const Page: React.FC<Props> = ({ data }) => {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
 
-  const [signupSadmin] = useMutation(SIGNUP_SADMIN, {
-    onCompleted({ signupSadmin }) {
-      if (signupSadmin?.token) {
-        localStorage.setItem('sadmin', signupSadmin.token)
+  const [signinSadmin] = useMutation(SIGNIN_SADMIN, {
+    onCompleted({ signinSadmin }) {
+      if (signinSadmin?.token) {
+        localStorage.setItem('sadmin', signinSadmin.token)
         router.push('/sadmin')
       }
     }
@@ -34,7 +34,7 @@ const Page: React.FC<Props> = ({ data }) => {
       const res = await auth.signInWithEmailAndPassword(email, password)
       if (res) {
         const token = await res.user.getIdToken()
-        signupSadmin({
+        signinSadmin({
           variables: { token }
         })
       }

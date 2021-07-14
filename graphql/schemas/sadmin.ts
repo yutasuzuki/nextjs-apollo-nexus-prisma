@@ -14,8 +14,8 @@ export const SadminUser = objectType({
   }
 })
 
-export const SignupSadminUser = objectType({
-  name: 'SignupSadminUser',
+export const AuthSadminUser = objectType({
+  name: 'AuthSadminUser',
   definition(t) {
     t.field(S.id.name, {
       type: S.id.type
@@ -45,7 +45,7 @@ export const SadminMutation = extendType({
   type: 'Mutation',
   definition(t) {
     t.field('signupSadmin', {
-      type: SignupSadminUser,
+      type: AuthSadminUser,
       args: {
         token: nonNull(stringArg()),
       },
@@ -66,8 +66,8 @@ export const SadminMutation = extendType({
         }
       },
     })
-    t.field('signupSadmin', {
-      type: SignupSadminUser,
+    t.field('signinSadmin', {
+      type: AuthSadminUser,
       args: {
         token: nonNull(stringArg()),
       },
@@ -78,6 +78,7 @@ export const SadminMutation = extendType({
           const res = await prisma.sadmin.findUnique({
             where: { uid }
           })
+          console.log(res)
           return {
             ...res,
             token
