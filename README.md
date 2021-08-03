@@ -1,6 +1,8 @@
 # Next.js + Firebase Authentication + Apollo + Nexus + Prisma
 
-このプロジェクトは以下の技術を採用しています。
+このプロジェクトは企業向けの管理画面でユーザー認証のみを実装したテンプレートです。
+
+以下の技術を採用しています。
 
 - Next.js
 - Firebase Authentication
