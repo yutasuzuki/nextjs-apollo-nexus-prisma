@@ -1,4 +1,13 @@
-# Next.js + Firebase Auth + Apollo + Nexus + Prisma
+# Next.js + Firebase Authentication + Apollo + Nexus + Prisma
+
+このプロジェクトは以下の技術を採用しています。
+
+- Next.js
+- Firebase Authentication
+- Apollo-client, Apollo-server
+- Nexus
+- Prisma
+- MySQL
 
 ## Usage
 
