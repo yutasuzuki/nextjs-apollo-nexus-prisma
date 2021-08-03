@@ -1,10 +1,13 @@
-# Next.js + Apollo + Nexus + Prisma
+# Next.js + Firebase Auth + Apollo + Nexus + Prisma
 
-graphqlのschemaも追加したら`npx prisma generate`する。prisma-nexusで引数が反映されないため。
+## Usage
 
-## Prisma
+```
+npm i 
+npx prisma db push --accept-data-loss
+```
 
-###　コマンド
+### Prisma
 
 #### migrate
 ```
@@ -13,6 +16,8 @@ npx prisma generate
 ```
 
 ### リセットやマイグレートができない時
+
+注）開発時に適時使用してください。
 
 ```
 // Reset用のDBに一度置き換えたものを構築する
