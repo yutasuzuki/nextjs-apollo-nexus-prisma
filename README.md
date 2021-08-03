@@ -15,7 +15,7 @@ npx prisma migrate dev --name マイグレードファイル名
 npx prisma generate
 ```
 
-### リセットやマイグレートができない時
+#### リセットやマイグレートができない時
 
 注）開発時に適時使用してください。
 
