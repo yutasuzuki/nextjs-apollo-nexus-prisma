@@ -6,14 +6,20 @@ const httpLink = createHttpLink({
 })
 
 const authLink = setContext((_, ctx) => {
-  const token = localStorage.getItem('token')
-  const sadmin = localStorage.getItem('sadmin')
+  const headers: { sadmin?: string, user?: string } = {}
+
+  if (localStorage.getItem('sadmin')) {
+    headers.sadmin = localStorage.getItem('sadmin')
+  }
+
+  if (localStorage.getItem('user')) {
+    headers.user = localStorage.getItem('user')
+  }
 
   return {
     headers: {
       ...ctx?.headers,
-      authorization: token ? `Bearer ${token}` : "",
-      sadmin
+      ...headers
     }
   }
 })

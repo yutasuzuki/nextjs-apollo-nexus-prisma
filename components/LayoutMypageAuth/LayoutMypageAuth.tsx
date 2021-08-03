@@ -1,27 +1,27 @@
 import React, { useCallback } from 'react'
-import { useRouter } from 'next/router'
 import Head from 'next/head'
 import Link from 'next/link'
-import styles from './LayoutSadminAuth.module.css'
-import { SadminProps } from 'libs/withSadmin'
+import { useRouter } from 'next/router'
+import styles from './LayoutMypageAuth.module.css'
+import { MypageProps } from 'libs/withMypage'
 import { useEffect } from 'react'
 
 interface Props {
   title?: string
-  data: SadminProps['data']
+  data: MypageProps['data']
 }
 
-export const LayoutSadminAuth: React.FC<Props> = ({ title, data, children }) => {
-  const { sadmin, loading } = data
+export const LayoutMypageAuth: React.FC<Props> = ({ title, data, children }) => {
   const router = useRouter()
+  const { user, loading } = data
 
   useEffect(() => {
-    if (!loading && sadmin) {
-      location.href = '/sadmin'
+    if (!loading && user) {
+      router.push('/mypage')
     }
-  }, [loading, sadmin])
+  }, [loading, user, router])
 
-  if (loading || sadmin) return null
+  if (loading || user) return null
 
   return (
     <div className={styles.container}>

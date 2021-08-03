@@ -2,62 +2,59 @@ import React, { useEffect } from 'react'
 import { useRouter } from 'next/router'
 import Head from 'next/head'
 import Link from 'next/link'
-import styles from './LayoutSadmin.module.css'
-import { SadminProps } from 'libs/withSadmin'
+import styles from './LayoutMypage.module.css'
+import { MypageProps } from 'libs/withMypage'
 import { useCallback } from 'react'
 
 interface Props {
   title?: string
-  data: SadminProps['data']
+  data: MypageProps['data']
 }
 
-export const LayoutSadmin: React.FC<Props> = ({ title = '', data, children }) => {
-  const { sadmin, loading } = data
+export const LayoutMypage: React.FC<Props> = ({ title = '', data, children }) => {
   const router = useRouter()
-
-  console.log(sadmin)
+  const { user, loading } = data
 
   useEffect(() => {
-    if (!loading && !sadmin) {
-      location.href = '/sadmin/auth/signin'
+    if (!loading && !user) {
+      router.push('/mypage/auth/signin')
     }
-  }, [loading, sadmin])
+  }, [loading, user])
 
   const _handleOnSignout = useCallback(() => {
-    localStorage.removeItem('sadmin')
-    location.href = '/sadmin/auth/signin'
+    localStorage.removeItem('user')
+    router.push('/mypage/auth/signin')
   }, [])
 
-  if (loading || !sadmin) return null
+  if (loading || !user) return null
 
   return (
     <div className={styles.container}>
       <Head>
-        <title>{title} | 管理者ページ</title>
-        <meta name="viewport" content="initial-scale=1.0, width=device-width" />
+        <title>{title} | マイページ</title>
         <style>{`html, body { background: #fafafc; }`}</style>
       </Head>
       <header className={styles.header}>
         <h1 className={styles.logo}>
-          <Link href="/sadmin">
-            <a>管理者ページ</a>
+          <Link href="/mypage">
+            <a>マイページ</a>
           </Link>
         </h1>
         <div>
-          <a className={styles.logout} onClick={_handleOnSignout}>ログアウト</a>
+          <a onClick={_handleOnSignout}>ログアウト</a>
         </div>
       </header>
       <aside className={styles.aside}>
         <nav>
           <ul className={styles.menu}>
             <li>
-              <Link href="/sadmin">
+              <Link href="/mypage">
                 <a>ダッシュボード</a>
               </Link>
             </li>
             <li>
-              <Link href="/sadmin/company">
-                <a>会社一覧</a>
+              <Link href="/mypage/members">
+                <a>メンバー</a>
               </Link>
             </li>
           </ul>

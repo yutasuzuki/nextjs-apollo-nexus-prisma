@@ -1,5 +1,6 @@
 import React from 'react'
 import Link from 'next/link'
+import { withMypage } from 'libs/withMypage'
 
 interface Props {}
 
@@ -9,14 +10,22 @@ const Page: React.FC<Props> = (props) => {
     <div>
       <div>
         <section>
-          <h2>Admin</h2>
+          <h2>company</h2>
           <div>
-            <Link href="/admin/auth/signup"><a>新規登録</a></Link>
-          </div>
-          <div>
-            <Link href="/admin/auth/signin"><a>ログイン</a></Link>
+            <Link href="/company/auth/signup"><a>新規登録</a></Link>
           </div>
         </section>
+        <hr />
+        <section>
+          <h2>User</h2>
+          <div>
+            <Link href="/mypage/auth/signup"><a>新規登録</a></Link>
+          </div>
+          <div>
+            <Link href="/mypage/auth/signin"><a>ログイン</a></Link>
+          </div>
+        </section>
+        <hr />
         <section>
           <h2>Sadmin</h2>
           <div>
@@ -32,4 +41,4 @@ const Page: React.FC<Props> = (props) => {
 }
 
 
-export default Page
+export default withMypage(Page)

@@ -1,0 +1,28 @@
+.birthdaySelect {
+  display: flex;
+  border: 1px var(--color-border-light) solid;
+  border-radius: 4px;
+}
+
+.birthdaySelect div {
+  position: relative;
+  flex: 1;
+  justify-self: center;
+}
+
+.birthdaySelect div::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  transform: translateY(calc(-50% - 2px)) rotate(45deg);
+  right: 10px;
+  width: 10px;
+  height: 10px;
+  border-right: 1px var(--color-border-light) solid;
+  border-bottom: 1px var(--color-border-light) solid;
+}
+
+.birthdaySelect select {
+  width: 100%;
+  padding: 12px;
+}

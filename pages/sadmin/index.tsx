@@ -7,7 +7,11 @@ interface Props extends SadminProps {}
 const Page: React.FC<Props> = ({ data }) => {
   return (
     <LayoutSadmin data={data} title="ダッシュボード">
-      <h1>Sadmin!!</h1>
+      <main>
+        <div>
+          ダッシュボード
+        </div>
+      </main>
     </LayoutSadmin>
   )
 }

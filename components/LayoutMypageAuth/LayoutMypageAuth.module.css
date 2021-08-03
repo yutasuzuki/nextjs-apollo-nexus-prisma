@@ -3,15 +3,15 @@
   align-items: center;
   justify-content: space-between;
   height: 60px;
-  background-color: var(--color-black);
+  background-color: #fff;
   padding: 0 12px;
-  color: var(--color-white);
+  border-bottom: #f4f4f4 solid 1px;
   z-index: 1;
 }
 
 .logo a {
   font-size: 14px;
-  color: var(--color-white);
+  color: #000;
   font-weight: bold;
 }
 

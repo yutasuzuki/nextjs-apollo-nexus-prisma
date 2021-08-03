@@ -1,21 +1,21 @@
 import React, { useState, useCallback } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
-import { auth } from 'libs/firebase'
 import { gql, useMutation } from '@apollo/client'
-import { withSadmin, SadminProps } from 'libs/withSadmin'
-import { LayoutSadminAuth } from 'components/LayoutSadminAuth/LayoutSadminAuth'
+import { auth } from 'libs/firebase'
+import { withMypage, MypageProps } from 'libs/withMypage'
+import { LayoutMypageAuth } from 'components/LayoutMypageAuth/LayoutMypageAuth'
 import commonStyles from 'styles/commonStyles.module.css'
 import formStyles from 'styles/formStyles.module.css'
 import utilStyles from 'styles/utilStyles.module.css'
 
-const SIGNUP_SADMIN = gql`
-  mutation SignupSadmin($token: String!) {
-    signupSadmin(token: $token) { id uid email token }
+const SIGNIN_USER = gql`
+  mutation SigninUser($token: String!) {
+    signinUser(token: $token) { id uid email token }
   }
 `;
 
-interface Props extends SadminProps {}
+interface Props extends MypageProps {}
 
 const Page: React.FC<Props> = ({ data }) => {
   const router = useRouter()
@@ -24,13 +24,13 @@ const Page: React.FC<Props> = ({ data }) => {
     password: ''
   })
 
-  const [signupSadmin] = useMutation(SIGNUP_SADMIN, {
-    onCompleted({ signupSadmin }) {
-      if (signupSadmin?.token) {
-        localStorage.setItem('sadmin', signupSadmin.token)
-        router.push('/sadmin')
+  const [signinUser] = useMutation(SIGNIN_USER, {
+    onCompleted({ signinUser }) {
+      if (signinUser?.token) {
+        localStorage.setItem('user', signinUser.token)
+        router.push('/mypage', undefined, { shallow: true })
       } else {
-        localStorage.removeItem('sadmin')
+        localStorage.removeItem('user')
       }
     }
   })
@@ -49,10 +49,10 @@ const Page: React.FC<Props> = ({ data }) => {
   const _handleOnSubmit = useCallback(async (e) => {
     e.preventDefault()
     try {
-      const res = await auth.createUserWithEmailAndPassword(items.email, items.password)
+      const res = await auth.signInWithEmailAndPassword(items.email, items.password)
       if (res) {
         const token = await res.user.getIdToken()
-        signupSadmin({
+        signinUser({
           variables: { token }
         })
       }
@@ -62,12 +62,12 @@ const Page: React.FC<Props> = ({ data }) => {
   }, [items])
 
   return (
-    <LayoutSadminAuth data={data}>
-      <div className={`${utilStyles.betweenCenter} ${utilStyles.mb16}`}>
-        <div className={commonStyles.heading}>管理者 新規登録</div>
-        <Link href="/sadmin/auth/signin"><a>ログイン</a></Link>
-      </div>
+    <LayoutMypageAuth data={data}>
       <form onSubmit={_handleOnSubmit}>
+        <div className={`${utilStyles.betweenCenter} ${utilStyles.mb16}`}>
+          <div className={commonStyles.heading}>ユーザーログイン</div>
+          <Link href="/mypage/auth/signup"><a>新規登録</a></Link>
+        </div>
         <div className={formStyles.row}>
           <label className={formStyles.title}>メールアドレス</label>
           <div>
@@ -84,8 +84,8 @@ const Page: React.FC<Props> = ({ data }) => {
           <input className={formStyles.submit} type="submit" value="送信" />
         </div>
       </form>
-    </LayoutSadminAuth>
+    </LayoutMypageAuth>
   )
 }
 
-export default withSadmin(Page)
+export default withMypage(Page, { fetchPolicy: 'no-cache' })

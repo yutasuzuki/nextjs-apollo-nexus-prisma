@@ -1,0 +1,53 @@
+.flex {
+  display: flex;
+}
+
+.betweenCenter {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.relative {
+  position: relative;
+}
+
+.mt8 {
+  margin-top: 8px;
+}
+
+.mt12 {
+  margin-top: 12px;
+}
+
+.mt16 {
+  margin-top: 16px;
+}
+
+.mt20 {
+  margin-top: 20px;
+}
+
+.mt24 {
+  margin-top: 24px;
+}
+
+.mb8 {
+  margin-bottom: 8px;
+}
+
+.mb12 {
+  margin-bottom: 12px;
+}
+
+.mb16 {
+  margin-bottom: 16px;
+}
+
+.mb20 {
+  margin-bottom: 20px;
+}
+
+.mb24 {
+  margin-bottom: 24px;
+}

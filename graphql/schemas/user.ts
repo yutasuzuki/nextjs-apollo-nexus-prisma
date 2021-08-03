@@ -1,47 +1,59 @@
 import { User as U } from 'nexus-prisma'
-import { objectType, extendType, stringArg, nonNull, intArg } from 'nexus'
+import { objectType, extendType, stringArg, nonNull, interfaceType, intArg } from 'nexus'
+import admin from "libs/firebase-admin"
+import { EXPIRES_IN } from '../../constants'
+
+const IUser = interfaceType({
+  name: 'IUser',
+  definition(t) {
+    t.field(U.id.name, {
+      type: U.id.type
+    })
+    t.string('uid')
+    t.string('email')
+    t.string('name')
+    t.boolean('admin')
+    t.string('createdAt')
+    t.string('updatedAt')
+  },
+  resolveType() {
+    return null
+  },
+})
 
 
 export const User = objectType({
-  name: U.$name,
-  description: U.$description,
+  name: 'User',
   definition(t) {
-    t.field(U.id.name, {
-      type: U.id.type,
-      description: U.id.description
-    })
-    t.string(U.name.name) 
-    t.string(U.email.name)
+    t.implements(IUser)
+    t.field(U.company)
   }
 })
 
-export const Auth = objectType({
-  name: 'Auth',
-  description: U.$description,
+export const AuthUser = objectType({
+  name: 'AuthUser',
   definition(t) {
-    t.string('name'),
-    t.string('text'),
-    t.field('user', {
-      type: User,
-    })
-  }
-})
-
-export const UserAuth = objectType({
-  name: 'UserAuth',
-  description: U.$description,
-  definition(t) {
-    t.boolean('login')
+    t.implements(IUser)
+    t.string('token')
   }
 })
 
 export const UserQuery = extendType({
   type: 'Query',
   definition(t) {
-    t.nonNull.list.field('users', {
-      type: U.$name,
-      resolve(_root, _args, ctx) {
-        return ctx.prisma.user.findMany()
+    t.field('user', {
+      type: User,
+      async resolve(_root, _args, { prisma, user }) {
+        if (user) {
+          const { uid } = await admin.auth().verifySessionCookie(user, true)
+          if (!uid) return null
+          return prisma.user.findUnique({
+            where: { uid },
+            include: { company: true },
+          })
+        } else {
+          return null
+        }
       },
     })
   },
@@ -50,38 +62,54 @@ export const UserQuery = extendType({
 export const UserMutation = extendType({
   type: 'Mutation',
   definition(t) {
-    t.field('update', {
-      type: Auth,
+    t.field('signupUser', {
+      type: AuthUser,
       args: {
-        // id: nonNull(intArg()),
+        companyId: nonNull(intArg()),
         name: nonNull(stringArg()),
+        token: nonNull(stringArg()),
       },
-      resolve(_root, _args, ctx) {
-        console.log('update')
-        console.log('_root', _root)
-        console.log('_args', _args)
-        console.log('ctx', ctx)
-        return {
-          text: 'hoge',
-          user: {
-            id: 1,
-            name: 'yuta',
-            email: 'yuta@example.com'
+      async resolve(root, args, { prisma }) {
+        try {
+          const { token: t, name, companyId } = args
+          const token = await admin.auth().createSessionCookie(t, { expiresIn: EXPIRES_IN })
+          const { uid, email } = await admin.auth().verifySessionCookie(token, true)
+          await prisma.userSignupRequest.deleteMany({
+            where: { email }
+          })
+          const res = await prisma.user.create({
+            data: { uid, email, name, companyId, admin: false }
+          })
+          return {
+            ...res,
+            token
           }
+        } catch(error) {
+          console.log(error)
+          return null
         }
       },
-    }),
-    t.field('signupUser', {
-      type: UserAuth,
+    })
+    t.field('signinUser', {
+      type: AuthUser,
       args: {
-        email: nonNull(stringArg()),
-        password: nonNull(stringArg()),
+        token: nonNull(stringArg()),
       },
-      resolve(_root, args, ctx) {
-        console.log(_root)
-        console.log(args)
-        // console.log(ctx.prisma)
-        return { login: true }
+      async resolve(root, args, { prisma }) {
+        try {
+          const token = await admin.auth().createSessionCookie(args?.token, { expiresIn: EXPIRES_IN })
+          const { uid } = await admin.auth().verifySessionCookie(token, true)
+          const res = await prisma.user.findUnique({
+            where: { uid }
+          })
+          return {
+            ...res,
+            token
+          }
+        } catch(error) {
+          console.log(error)
+          return null
+        }
       },
     })
   },
