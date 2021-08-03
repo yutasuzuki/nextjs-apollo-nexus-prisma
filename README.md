@@ -26,8 +26,11 @@ npx prisma db push --accept-data-loss --schema=./prisma/reset.prisma
 npx prisma db push --accept-data-loss
 ```
 
-## 注意事項
+### Nexus
 
-### schema.graphqlが変更されない時
+#### schema.graphqlが変更されない時
 
-graphql/schemas/*を編集してもschema.graphqlが変更されない時は、一度フォルダごと削除してサーバーを再起動し、ブラウザでページにアクセスする。サーバーの再起動では再生成されないし、生成に時間がかかることもある。
+`graphql/schemas/*`を編集してもschema.graphqlが変更されない事があります。
+`graphql/_generated`フォルダごと削除してサーバーを再起動し、ブラウザでページにアクセスしてください。サーバーの再起動では再生成されず、生成に時間がかかることもあります。
+
+
