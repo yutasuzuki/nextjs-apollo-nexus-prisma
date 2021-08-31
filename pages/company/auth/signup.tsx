@@ -1,7 +1,7 @@
 import React, { useState, useCallback } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
-import { auth } from 'libs/firebase'
+import { createUserWithEmailAndPassword, getAuth } from 'firebase/auth'
 import { gql, useMutation } from '@apollo/client'
 import { withSadmin, SadminProps } from 'libs/withSadmin'
 import { LayoutSadminAuth } from 'components/LayoutSadminAuth/LayoutSadminAuth'
@@ -54,7 +54,7 @@ const Page: React.FC<Props> = ({ data }) => {
   const _handleOnSubmit = useCallback(async (e) => {
     e.preventDefault()
     try {
-      const res = await auth.createUserWithEmailAndPassword(items.email, items.password)
+      const res = await createUserWithEmailAndPassword(getAuth(), items.email, items.password)
       if (res) {
         const token = await res.user.getIdToken()
         signupSadmin({

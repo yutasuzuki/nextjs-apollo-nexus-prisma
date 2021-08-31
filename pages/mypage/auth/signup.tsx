@@ -1,7 +1,7 @@
 import React, { useState, useCallback } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
-import { auth } from 'libs/firebase'
+import { createUserWithEmailAndPassword, getAuth } from 'firebase/auth'
 import { gql, useMutation } from '@apollo/client'
 import { withMypage, MypageProps } from 'libs/withMypage'
 import { LayoutMypageAuth } from 'components/LayoutMypageAuth/LayoutMypageAuth'
@@ -58,7 +58,7 @@ const Page: React.FC<Props> = ({ data, user }) => {
   const _handleOnSubmit = useCallback(async (e) => {
     e.preventDefault()
     try {
-      const res = await auth.createUserWithEmailAndPassword(user.email, items.password)
+      const res = await createUserWithEmailAndPassword(getAuth(), user.email, items.password)
       if (res) {
         const token = await res.user.getIdToken()
         signupUser({

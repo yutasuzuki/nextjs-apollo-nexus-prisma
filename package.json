@@ -1,5 +1,5 @@
 {
-  "name": "lp-gas",
+  "name": "nextjs-prisma-graphql",
   "version": "1.0.0",
   "scripts": {
     "dev": "next",
@@ -10,32 +10,31 @@
     "type-check": "tsc"
   },
   "dependencies": {
-    "@apollo/client": "^3.3.20",
-    "@prisma/client": "^2.24.1",
-    "apollo-server-micro": "^2.25.1",
-    "crypto-js": "^4.0.0",
-    "firebase": "^8.7.1",
-    "firebase-admin": "^9.10.0",
-    "graphql": "^15.5.0",
-    "graphql-request": "^3.4.0",
+    "@apollo/client": "^3.4.10",
+    "@prisma/client": "^2.30.2",
+    "apollo-server-micro": "^3.3.0",
+    "crypto-js": "^4.1.1",
+    "firebase": "^9.0.1",
+    "firebase-admin": "^9.11.1",
+    "graphql": "^15.5.2",
+    "graphql-request": "^3.5.0",
     "next": "latest",
-    "next-firebase-auth": "^0.13.1",
-    "nexus": "^1.0.0",
-    "nexus-prisma": "^0.28.0",
+    "nexus": "^1.1.0",
+    "nexus-prisma": "^0.33.0",
     "nodemailer": "^6.6.3",
     "nookies": "^2.5.2",
-    "react": "^17.0.1",
-    "react-dom": "^17.0.1"
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2"
   },
   "devDependencies": {
     "@types/graphql": "^14.5.0",
-    "@types/node": "^12.12.21",
+    "@types/node": "^16.7.9",
     "@types/nodemailer": "^6.4.4",
-    "@types/react": "^17.0.2",
-    "@types/react-dom": "^17.0.1",
-    "prisma": "^2.26.0",
-    "ts-node": "^10.0.0",
-    "typescript": "4.0"
+    "@types/react": "^17.0.19",
+    "@types/react-dom": "^17.0.9",
+    "prisma": "^2.30.2",
+    "ts-node": "^10.2.1",
+    "typescript": "4.4"
   },
   "license": "MIT"
 }
