@@ -23,7 +23,7 @@ model User {
   email             String       @unique
   admin             Boolean      @default(false)
   createdAt         DateTime     @default(now()) @map(name: "created_at")
-  updatedAt         DateTime     @default(now()) @map(name: "updated_at")
+  updatedAt         DateTime     @updatedAt @map(name: "updated_at")
   deletedAt         DateTime?    @map(name: "deleted_at")
 
   @@map(name: "user")
@@ -35,8 +35,8 @@ model UserSignupRequest {
   companyId  Int
   company    Company   @relation(fields: [companyId], references: [id])
   hash       String    @unique
-  createdAt  DateTime  @default(now()) @map(name: "created_at")
-  updatedAt  DateTime  @default(now()) @map(name: "updated_at")
+  createdAt DateTime  @default(now()) @map(name: "created_at")
+  updatedAt DateTime  @updatedAt @map(name: "updated_at")
 
   @@map(name: "user_signup_request")
 }
@@ -50,18 +50,21 @@ model Company {
   // tel               String
   users               User[]
   userSignupRequests  UserSignupRequest[]
-  createdAt           DateTime     @default(now()) @map(name: "created_at")
-  updatedAt           DateTime     @default(now()) @map(name: "updated_at")
-  deletedAt           DateTime?    @map(name: "deleted_at")
+  createdAt          DateTime            @default(now()) @map(name: "created_at")
+  updatedAt          DateTime            @updatedAt @map(name: "updated_at")
+  deletedAt          DateTime?           @map(name: "deleted_at")
 
   @@map(name: "company")
 }
 
 // 管理者
 model Sadmin {
-  id                Int      @default(autoincrement()) @id
-  uid               String   @unique
-  email             String
+  id            Int      @default(autoincrement()) @id
+  uid           String   @unique
+  email         String
+  createdAt     DateTime  @default(now()) @map(name: "created_at")
+  updatedAt     DateTime  @updatedAt @map(name: "updated_at")
+  deletedAt     DateTime? @map(name: "deleted_at")
 
   @@map(name: "sadmin")
 }

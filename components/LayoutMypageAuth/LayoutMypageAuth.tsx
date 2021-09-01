@@ -1,7 +1,6 @@
-import React, { useCallback } from 'react'
+import React from 'react'
 import Head from 'next/head'
 import Link from 'next/link'
-import { useRouter } from 'next/router'
 import styles from './LayoutMypageAuth.module.css'
 import { MypageProps } from 'libs/withMypage'
 import { useEffect } from 'react'
@@ -12,14 +11,13 @@ interface Props {
 }
 
 export const LayoutMypageAuth: React.FC<Props> = ({ title, data, children }) => {
-  const router = useRouter()
   const { user, loading } = data
 
   useEffect(() => {
     if (!loading && user) {
-      router.push('/mypage')
+      location.href = '/mypage'
     }
-  }, [loading, user, router])
+  }, [loading, user])
 
   if (loading || user) return null
 

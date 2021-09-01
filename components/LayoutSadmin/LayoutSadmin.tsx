@@ -1,10 +1,9 @@
-import React, { useEffect } from 'react'
-import { useRouter } from 'next/router'
+import React, { useEffect, useCallback } from 'react'
 import Head from 'next/head'
 import Link from 'next/link'
 import styles from './LayoutSadmin.module.css'
 import { SadminProps } from 'libs/withSadmin'
-import { useCallback } from 'react'
+import { destroyCookie } from 'nookies'
 
 interface Props {
   title?: string
@@ -13,9 +12,6 @@ interface Props {
 
 export const LayoutSadmin: React.FC<Props> = ({ title = '', data, children }) => {
   const { sadmin, loading } = data
-  const router = useRouter()
-
-  console.log(sadmin)
 
   useEffect(() => {
     if (!loading && !sadmin) {
@@ -24,7 +20,7 @@ export const LayoutSadmin: React.FC<Props> = ({ title = '', data, children }) =>
   }, [loading, sadmin])
 
   const _handleOnSignout = useCallback(() => {
-    localStorage.removeItem('sadmin')
+    destroyCookie(null, 'sadmin')
     location.href = '/sadmin/auth/signin'
   }, [])
 

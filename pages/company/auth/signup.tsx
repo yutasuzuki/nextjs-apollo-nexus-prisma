@@ -3,7 +3,9 @@ import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { createUserWithEmailAndPassword, getAuth } from 'firebase/auth'
 import { gql, useMutation } from '@apollo/client'
+import { setCookie } from 'nookies'
 import { withSadmin, SadminProps } from 'libs/withSadmin'
+import { NOOKIES_EXPIRES_IN } from '../../../constants'
 import { LayoutSadminAuth } from 'components/LayoutSadminAuth/LayoutSadminAuth'
 
 const SIGNUP_COMPANY = gql`
@@ -25,19 +27,7 @@ const Page: React.FC<Props> = ({ data }) => {
     password: ''
   })
 
-  const [signupSadmin, { data: d }] = useMutation(SIGNUP_COMPANY, {
-    onCompleted({ signupCompany }) {
-      console.log(signupCompany)
-      if (signupCompany?.token) {
-        localStorage.setItem('user', signupCompany.token)
-        router.push('/mypage')
-      } else {
-        localStorage.removeItem('user')
-      }
-    }
-  })
-
-  console.log('d', d)
+  const [signupCompany] = useMutation(SIGNUP_COMPANY)
 
   const _handleOnChange = useCallback((e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     e.preventDefault()
@@ -57,13 +47,18 @@ const Page: React.FC<Props> = ({ data }) => {
       const res = await createUserWithEmailAndPassword(getAuth(), items.email, items.password)
       if (res) {
         const token = await res.user.getIdToken()
-        signupSadmin({
+        const { data: { signupCompany: u } } = await signupCompany({
           variables: { 
             name: items.name,
             companyName: items.companyName,
             token
           }
         })
+        setCookie(null, 'user', u?.token, {
+          maxAge: NOOKIES_EXPIRES_IN,
+          path: '/',
+        })
+        location.href = '/mypage'
       }
     } catch (error) {
       console.error(error)

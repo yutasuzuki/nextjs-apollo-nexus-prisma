@@ -1,10 +1,10 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useCallback } from 'react'
 import { useRouter } from 'next/router'
 import Head from 'next/head'
 import Link from 'next/link'
+import { destroyCookie } from 'nookies'
 import styles from './LayoutMypage.module.css'
 import { MypageProps } from 'libs/withMypage'
-import { useCallback } from 'react'
 
 interface Props {
   title?: string
@@ -17,13 +17,13 @@ export const LayoutMypage: React.FC<Props> = ({ title = '', data, children }) =>
 
   useEffect(() => {
     if (!loading && !user) {
-      router.push('/mypage/auth/signin')
+      location.href = '/mypage/auth/signin'
     }
   }, [loading, user])
 
   const _handleOnSignout = useCallback(() => {
-    localStorage.removeItem('user')
-    router.push('/mypage/auth/signin')
+    destroyCookie(null, 'user')
+    location.href = '/mypage/auth/signin'
   }, [])
 
   if (loading || !user) return null

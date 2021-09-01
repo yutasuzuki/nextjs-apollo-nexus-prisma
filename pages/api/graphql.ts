@@ -10,6 +10,7 @@ export const config = {
 
 const apolloServer = new ApolloServer({ schema, context })
 const startServer = apolloServer.start()
+
 export default async function handler(req, res) {
   await startServer
   const server = await apolloServer.createHandler({

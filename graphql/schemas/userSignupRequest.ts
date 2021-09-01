@@ -1,11 +1,8 @@
-import { Sadmin as S } from 'nexus-prisma'
+import { UserSignupRequest } from 'nexus-prisma'
 import { objectType, extendType, stringArg, nonNull, interfaceType, intArg, list } from 'nexus'
-import { gql, request, GraphQLClient } from 'graphql-request'
-import admin from "libs/firebase-admin"
 import { MailService } from 'services/MailService/MailService'
 import { CryptoService } from 'services/CryptoService/CryptoService'
-import { EXPIRES_IN, GRAPHQL_ENTRY_POINT } from '../../constants'
-import { Company } from './company'
+import { CompanyObject } from './company'
 import { USER_QUERY } from 'graphql/queries'
 import { User } from 'interfaces'
 
@@ -13,12 +10,12 @@ import { User } from 'interfaces'
 const IUserSignupRequest = interfaceType({
   name: 'IUserSignupRequest',
   definition(t) {
-    t.field(S.id.name, {
-      type: S.id.type
+    t.field(UserSignupRequest.id.name, {
+      type: UserSignupRequest.id.type
     })
-    t.string('email')
-    t.string('hash')
-    t.int('companyId')
+    t.string(UserSignupRequest.email.name)
+    t.string(UserSignupRequest.hash.name)
+    t.int(UserSignupRequest.companyId.name)
   },
   resolveType() {
     return null
@@ -33,7 +30,7 @@ export const SignupRequestUser = objectType({
   definition(t) {
     t.implements(IUserSignupRequest)
     t.field('company', {
-      type: Company
+      type: CompanyObject
     })
   }
 })

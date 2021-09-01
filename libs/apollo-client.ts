@@ -1,19 +1,21 @@
-import { ApolloClient, createHttpLink, InMemoryCache } from '@apollo/client';
-import { setContext } from '@apollo/client/link/context';
+import { ApolloClient, createHttpLink, InMemoryCache } from '@apollo/client'
+import { setContext } from '@apollo/client/link/context'
+import { parseCookies } from 'nookies'
 
 const httpLink = createHttpLink({
   uri: '/api/graphql',
 })
 
 const authLink = setContext((_, ctx) => {
+  const cookie = parseCookies()
   const headers: { sadmin?: string, user?: string } = {}
 
-  if (localStorage.getItem('sadmin')) {
-    headers.sadmin = localStorage.getItem('sadmin')
+  if (cookie.sadmin) {
+    headers.sadmin = cookie.sadmin
   }
 
-  if (localStorage.getItem('user')) {
-    headers.user = localStorage.getItem('user')
+  if (cookie.user) {
+    headers.user = cookie.user
   }
 
   return {

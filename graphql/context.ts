@@ -1,14 +1,13 @@
 import { prisma } from "./client";
 import { PrismaClient } from "@prisma/client"
-import { NextApiRequest, NextApiResponse } from "next"
-import { gql, request, GraphQLClient } from 'graphql-request'
-import { EXPIRES_IN, GRAPHQL_ENTRY_POINT } from '../constants'
+import { GraphQLClient } from 'graphql-request'
+import { GRAPHQL_ENTRY_POINT } from '../constants'
 
 export interface Context {
   prisma: PrismaClient
+  gqlClient: GraphQLClient
   sadmin: string
   user: string
-  gqlClient: GraphQLClient
 }
 
 export const context = ({ req }) => {

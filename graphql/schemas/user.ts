@@ -1,20 +1,25 @@
-import { User as U } from 'nexus-prisma'
+import { User } from 'nexus-prisma'
 import { objectType, extendType, stringArg, nonNull, interfaceType, intArg } from 'nexus'
 import admin from "libs/firebase-admin"
-import { EXPIRES_IN } from '../../constants'
+import { FIREBASE_EXPIRES_IN } from '../../constants'
+import { CompanyObject } from './company'
 
 const IUser = interfaceType({
   name: 'IUser',
   definition(t) {
-    t.field(U.id.name, {
-      type: U.id.type
+    t.field(User.id.name, {
+      type: User.id.type
     })
-    t.string('uid')
-    t.string('email')
-    t.string('name')
-    t.boolean('admin')
-    t.string('createdAt')
-    t.string('updatedAt')
+    t.string(User.uid.name)
+    t.string(User.email.name)
+    t.string(User.name.name)
+    t.boolean(User.admin.name)
+    t.field(User.createdAt.name, { type: 'DateTime' })
+    t.field(User.updatedAt.name, { type: 'DateTime' })
+    t.field(User.deletedAt.name, { type: 'DateTime' })
+    t.field(User.company.name, {
+      type: CompanyObject
+    })
   },
   resolveType() {
     return null
@@ -22,15 +27,15 @@ const IUser = interfaceType({
 })
 
 
-export const User = objectType({
+export const UserObject = objectType({
   name: 'User',
   definition(t) {
     t.implements(IUser)
-    t.field(U.company)
+    t.field(User.company)
   }
 })
 
-export const AuthUser = objectType({
+export const AuthUserObject = objectType({
   name: 'AuthUser',
   definition(t) {
     t.implements(IUser)
@@ -42,7 +47,7 @@ export const UserQuery = extendType({
   type: 'Query',
   definition(t) {
     t.field('user', {
-      type: User,
+      type: UserObject,
       async resolve(_root, _args, { prisma, user }) {
         if (user) {
           const { uid } = await admin.auth().verifySessionCookie(user, true)
@@ -63,7 +68,7 @@ export const UserMutation = extendType({
   type: 'Mutation',
   definition(t) {
     t.field('signupUser', {
-      type: AuthUser,
+      type: AuthUserObject,
       args: {
         companyId: nonNull(intArg()),
         name: nonNull(stringArg()),
@@ -72,7 +77,7 @@ export const UserMutation = extendType({
       async resolve(root, args, { prisma }) {
         try {
           const { token: t, name, companyId } = args
-          const token = await admin.auth().createSessionCookie(t, { expiresIn: EXPIRES_IN })
+          const token = await admin.auth().createSessionCookie(t, { expiresIn: FIREBASE_EXPIRES_IN })
           const { uid, email } = await admin.auth().verifySessionCookie(token, true)
           await prisma.userSignupRequest.deleteMany({
             where: { email }
@@ -91,13 +96,13 @@ export const UserMutation = extendType({
       },
     })
     t.field('signinUser', {
-      type: AuthUser,
+      type: AuthUserObject,
       args: {
         token: nonNull(stringArg()),
       },
       async resolve(root, args, { prisma }) {
         try {
-          const token = await admin.auth().createSessionCookie(args?.token, { expiresIn: EXPIRES_IN })
+          const token = await admin.auth().createSessionCookie(args?.token, { expiresIn: FIREBASE_EXPIRES_IN })
           const { uid } = await admin.auth().verifySessionCookie(token, true)
           const res = await prisma.user.findUnique({
             where: { uid }

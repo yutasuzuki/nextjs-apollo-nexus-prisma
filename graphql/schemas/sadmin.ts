@@ -1,7 +1,7 @@
 import { Sadmin as S } from 'nexus-prisma'
 import { objectType, extendType, stringArg, nonNull, interfaceType } from 'nexus'
 import admin from "libs/firebase-admin"
-import { EXPIRES_IN } from '../../constants'
+import { FIREBASE_EXPIRES_IN } from '../../constants'
 
 const ISadminUser = interfaceType({
   name: 'ISadminUser',
@@ -18,14 +18,14 @@ const ISadminUser = interfaceType({
 })
 
 
-export const SadminUser = objectType({
+export const SadminUserObject = objectType({
   name: 'SadminUser',
   definition(t) {
     t.implements(ISadminUser)
   }
 })
 
-export const AuthSadminUser = objectType({
+export const AuthSadminUserObject = objectType({
   name: 'AuthSadminUser',
   definition(t) {
     t.implements(ISadminUser)
@@ -37,7 +37,7 @@ export const SadminQuery = extendType({
   type: 'Query',
   definition(t) {
     t.field('sadmin', {
-      type: SadminUser,
+      type: SadminUserObject,
       async resolve(_root, _args, { prisma, sadmin }) {
         if (!sadmin) {
           return null
@@ -55,13 +55,13 @@ export const SadminMutation = extendType({
   type: 'Mutation',
   definition(t) {
     t.field('signupSadmin', {
-      type: AuthSadminUser,
+      type: AuthSadminUserObject,
       args: {
         token: nonNull(stringArg()),
       },
       async resolve(root, args, { prisma }) {
         try {
-          const token = await admin.auth().createSessionCookie(args?.token, { expiresIn: EXPIRES_IN })
+          const token = await admin.auth().createSessionCookie(args?.token, { expiresIn: FIREBASE_EXPIRES_IN })
           const { uid, email } = await admin.auth().verifySessionCookie(token, true)
           const res = await prisma.sadmin.create({
             data: { uid, email }
@@ -77,13 +77,13 @@ export const SadminMutation = extendType({
       },
     })
     t.field('signinSadmin', {
-      type: AuthSadminUser,
+      type: AuthSadminUserObject,
       args: {
         token: nonNull(stringArg()),
       },
       async resolve(root, args, { prisma }) {
         try {
-          const token = await admin.auth().createSessionCookie(args?.token, { expiresIn: EXPIRES_IN })
+          const token = await admin.auth().createSessionCookie(args?.token, { expiresIn: FIREBASE_EXPIRES_IN })
           const { uid } = await admin.auth().verifySessionCookie(token, true)
           const res = await prisma.sadmin.findUnique({
             where: { uid }

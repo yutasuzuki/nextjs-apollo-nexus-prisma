@@ -1,8 +1,9 @@
 import React, { useState, useCallback } from 'react'
 import Link from 'next/link'
-import { useRouter } from 'next/router'
 import { createUserWithEmailAndPassword, getAuth } from 'firebase/auth'
 import { gql, useMutation } from '@apollo/client'
+import { setCookie } from 'nookies'
+import { NOOKIES_EXPIRES_IN } from '../../../constants'
 import { withSadmin, SadminProps } from 'libs/withSadmin'
 import { LayoutSadminAuth } from 'components/LayoutSadminAuth/LayoutSadminAuth'
 import commonStyles from 'styles/commonStyles.module.css'
@@ -18,22 +19,11 @@ const SIGNUP_SADMIN = gql`
 interface Props extends SadminProps {}
 
 const Page: React.FC<Props> = ({ data }) => {
-  const router = useRouter()
   const [items, setItems] = useState({
     email: '',
     password: ''
   })
-
-  const [signupSadmin] = useMutation(SIGNUP_SADMIN, {
-    onCompleted({ signupSadmin }) {
-      if (signupSadmin?.token) {
-        localStorage.setItem('sadmin', signupSadmin.token)
-        router.push('/sadmin')
-      } else {
-        localStorage.removeItem('sadmin')
-      }
-    }
-  })
+  const [signupSadmin] = useMutation(SIGNUP_SADMIN)
 
   const _handleOnChange = useCallback((e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     e.preventDefault()
@@ -52,9 +42,14 @@ const Page: React.FC<Props> = ({ data }) => {
       const res = await createUserWithEmailAndPassword(getAuth(), items.email, items.password)
       if (res) {
         const token = await res.user.getIdToken()
-        signupSadmin({
+        const { data: { signupSadmin: sadmin } } = await signupSadmin({
           variables: { token }
         })
+        setCookie(null, 'sadmin', sadmin.token, {
+          maxAge: NOOKIES_EXPIRES_IN,
+          path: '/',
+        })
+        location.href = '/sadmin'
       }
     } catch (error) {
       console.error(error)

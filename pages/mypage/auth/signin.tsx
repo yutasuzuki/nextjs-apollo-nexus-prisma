@@ -3,6 +3,8 @@ import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { gql, useMutation } from '@apollo/client'
 import { signInWithEmailAndPassword, getAuth } from 'firebase/auth'
+import { setCookie } from 'nookies'
+import { NOOKIES_EXPIRES_IN } from '../../../constants'
 import { withMypage, MypageProps } from 'libs/withMypage'
 import { LayoutMypageAuth } from 'components/LayoutMypageAuth/LayoutMypageAuth'
 import commonStyles from 'styles/commonStyles.module.css'
@@ -52,9 +54,14 @@ const Page: React.FC<Props> = ({ data }) => {
       const res = await signInWithEmailAndPassword(getAuth(), items.email, items.password)
       if (res) {
         const token = await res.user.getIdToken()
-        signinUser({
+        const { data: { signinUser: u } } = await signinUser({
           variables: { token }
         })
+        setCookie(null, 'user', u?.token, {
+          maxAge: NOOKIES_EXPIRES_IN,
+          path: '/',
+        })
+        location.href = '/mypage'
       }
     } catch (error) {
       console.error(error)

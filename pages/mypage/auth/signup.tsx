@@ -3,6 +3,8 @@ import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { createUserWithEmailAndPassword, getAuth } from 'firebase/auth'
 import { gql, useMutation } from '@apollo/client'
+import { setCookie } from 'nookies'
+import { NOOKIES_EXPIRES_IN } from '../../../constants'
 import { withMypage, MypageProps } from 'libs/withMypage'
 import { LayoutMypageAuth } from 'components/LayoutMypageAuth/LayoutMypageAuth'
 import { GetServerSideProps } from 'next'
@@ -61,13 +63,18 @@ const Page: React.FC<Props> = ({ data, user }) => {
       const res = await createUserWithEmailAndPassword(getAuth(), user.email, items.password)
       if (res) {
         const token = await res.user.getIdToken()
-        signupUser({
+        const { data: { signupUser: u } } = await signupUser({
           variables: {
             name: items.name,
             companyId: user.company?.id,
             token
           }
         })
+        setCookie(null, 'user', u?.token, {
+          maxAge: NOOKIES_EXPIRES_IN,
+          path: '/',
+        })
+        location.href = '/mypage'
       }
     } catch (error) {
       console.error(error)
