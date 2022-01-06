@@ -1,4 +1,3 @@
-import { UserSignupRequest } from 'nexus-prisma'
 import { objectType, extendType, stringArg, nonNull, interfaceType, intArg, list } from 'nexus'
 import { MailService } from 'services/MailService/MailService'
 import { CryptoService } from 'services/CryptoService/CryptoService'
@@ -10,12 +9,12 @@ import { User } from 'interfaces'
 const IUserSignupRequest = interfaceType({
   name: 'IUserSignupRequest',
   definition(t) {
-    t.field(UserSignupRequest.id.name, {
-      type: UserSignupRequest.id.type
+    t.nonNull.field('id', {
+      type: 'Int'
     })
-    t.string(UserSignupRequest.email.name)
-    t.string(UserSignupRequest.hash.name)
-    t.int(UserSignupRequest.companyId.name)
+    t.string('email')
+    t.string('hash')
+    t.int('companyId')
   },
   resolveType() {
     return null

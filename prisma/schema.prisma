@@ -10,10 +10,6 @@ generator client {
   provider = "prisma-client-js"
 }
 
-generator nexusPrisma {
-   provider = "nexus-prisma"
-}
-
 model User {
   id                Int          @default(autoincrement()) @id
   uid               String       @unique

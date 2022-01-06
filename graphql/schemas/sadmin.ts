@@ -1,4 +1,3 @@
-import { Sadmin as S } from 'nexus-prisma'
 import { objectType, extendType, stringArg, nonNull, interfaceType } from 'nexus'
 import admin from "libs/firebase-admin"
 import { FIREBASE_EXPIRES_IN } from '../../constants'
@@ -6,8 +5,8 @@ import { FIREBASE_EXPIRES_IN } from '../../constants'
 const ISadminUser = interfaceType({
   name: 'ISadminUser',
   definition(t) {
-    t.nonNull.field(S.id.name, {
-      type: S.id.type
+    t.nonNull.field('id', {
+      type: 'Int'
     })
     t.string('uid')
     t.string('email')

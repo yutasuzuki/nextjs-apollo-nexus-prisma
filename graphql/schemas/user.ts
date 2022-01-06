@@ -1,4 +1,3 @@
-import { User } from 'nexus-prisma'
 import { objectType, extendType, stringArg, nonNull, interfaceType, intArg } from 'nexus'
 import admin from "libs/firebase-admin"
 import { FIREBASE_EXPIRES_IN } from '../../constants'
@@ -7,17 +6,17 @@ import { CompanyObject } from './company'
 const IUser = interfaceType({
   name: 'IUser',
   definition(t) {
-    t.field(User.id.name, {
-      type: User.id.type
+    t.nonNull.field('id', {
+      type: 'Int'
     })
-    t.string(User.uid.name)
-    t.string(User.email.name)
-    t.string(User.name.name)
-    t.boolean(User.admin.name)
-    t.field(User.createdAt.name, { type: 'DateTime' })
-    t.field(User.updatedAt.name, { type: 'DateTime' })
-    t.field(User.deletedAt.name, { type: 'DateTime' })
-    t.field(User.company.name, {
+    t.string('uid')
+    t.string('email')
+    t.string('name')
+    t.boolean('admin')
+    t.field('createdAt', { type: 'DateTime' })
+    t.field('updatedAt', { type: 'DateTime' })
+    t.field('deletedAt', { type: 'DateTime' })
+    t.field('company', {
       type: CompanyObject
     })
   },
@@ -31,7 +30,6 @@ export const UserObject = objectType({
   name: 'User',
   definition(t) {
     t.implements(IUser)
-    t.field(User.company)
   }
 })
 
