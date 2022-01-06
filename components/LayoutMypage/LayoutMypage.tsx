@@ -2,7 +2,6 @@ import React, { useEffect, useCallback } from 'react'
 import { useRouter } from 'next/router'
 import Head from 'next/head'
 import Link from 'next/link'
-import { destroyCookie } from 'nookies'
 import styles from './LayoutMypage.module.css'
 import { MypageProps } from 'libs/withMypage'
 
@@ -22,7 +21,6 @@ export const LayoutMypage: React.FC<Props> = ({ title = '', data, children }) =>
   }, [loading, user])
 
   const _handleOnSignout = useCallback(() => {
-    destroyCookie(null, 'user')
     location.href = '/mypage/auth/signin'
   }, [])
 

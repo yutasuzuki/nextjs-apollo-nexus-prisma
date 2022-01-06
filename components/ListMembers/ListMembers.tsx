@@ -4,7 +4,6 @@ import Head from 'next/head'
 import Link from 'next/link'
 import styles from './LayoutMypage.module.css'
 import { MypageProps } from 'libs/withMypage'
-import { useCallback } from 'react'
 
 interface Props {
   items?: string

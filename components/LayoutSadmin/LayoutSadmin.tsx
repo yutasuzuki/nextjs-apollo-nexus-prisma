@@ -3,7 +3,6 @@ import Head from 'next/head'
 import Link from 'next/link'
 import styles from './LayoutSadmin.module.css'
 import { SadminProps } from 'libs/withSadmin'
-import { destroyCookie } from 'nookies'
 
 interface Props {
   title?: string
@@ -20,7 +19,6 @@ export const LayoutSadmin: React.FC<Props> = ({ title = '', data, children }) =>
   }, [loading, sadmin])
 
   const _handleOnSignout = useCallback(() => {
-    destroyCookie(null, 'sadmin')
     location.href = '/sadmin/auth/signin'
   }, [])
 
