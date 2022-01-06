@@ -6,18 +6,15 @@ import { GRAPHQL_ENTRY_POINT } from '../constants'
 export interface Context {
   prisma: PrismaClient
   gqlClient: GraphQLClient
-  sadmin: string
-  user: string
+  token: string
 }
 
 export const context = ({ req }) => {
-  const sadmin = req.headers.sadmin
-  const user = req.headers.user
-  const gqlClient = new GraphQLClient(GRAPHQL_ENTRY_POINT, { headers: { user, sadmin } })
+  const token = req.headers.token
+  const gqlClient = new GraphQLClient(GRAPHQL_ENTRY_POINT, { headers: { token } })
   return {
     prisma,
-    sadmin,
-    user,
-    gqlClient
+    gqlClient,
+    token
   };
 }

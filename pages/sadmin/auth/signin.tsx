@@ -11,8 +11,8 @@ import formStyles from 'styles/formStyles.module.css'
 import utilStyles from 'styles/utilStyles.module.css'
 
 const SIGNIN_SADMIN = gql`
-  mutation SigninSadmin($token: String!) {
-    signinSadmin(token: $token) { id uid email token }
+  mutation SigninSadmin {
+    signinSadmin { id uid email }
   }
 `;
 
@@ -41,16 +41,10 @@ const Page: React.FC<Props> = ({ data }) => {
     try {
       const res = await signInWithEmailAndPassword(getAuth(), items.email, items.password)
       if (res) {
-        const token = await res.user.getIdToken()
-        const { data: { signinSadmin: sadmin } } = await signinSadmin({
-          variables: { token }
-        })
-        console.log('sadmin', sadmin)
-        setCookie(null, 'sadmin', sadmin.token, {
-          maxAge: NOOKIES_EXPIRES_IN,
-          path: '/',
-        })
-        location.href = '/sadmin'
+        const { data: { signinSadmin: sadmin } } = await signinSadmin()
+        if (sadmin) {
+          location.href = '/sadmin'
+        }
       }
     } catch (error) {
       console.error(error)

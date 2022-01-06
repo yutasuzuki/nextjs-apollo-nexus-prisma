@@ -1,6 +1,5 @@
 import { objectType, extendType, stringArg, nonNull, interfaceType, intArg } from 'nexus'
-import admin from "libs/firebase-admin"
-import { FIREBASE_EXPIRES_IN } from '../../constants'
+import admin from 'libs/firebase-admin'
 import { CompanyObject } from './company'
 
 const IUser = interfaceType({
@@ -33,29 +32,23 @@ export const UserObject = objectType({
   }
 })
 
-export const AuthUserObject = objectType({
-  name: 'AuthUser',
-  definition(t) {
-    t.implements(IUser)
-    t.string('token')
-  }
-})
-
 export const UserQuery = extendType({
   type: 'Query',
   definition(t) {
     t.field('user', {
       type: UserObject,
-      async resolve(_root, _args, { prisma, user }) {
-        if (user) {
-          const { uid } = await admin.auth().verifySessionCookie(user, true)
+      async resolve(_root, _args, { prisma, token }) {
+        try {
+          const { uid } = await admin.auth().verifyIdToken(token)
           if (!uid) return null
           return prisma.user.findUnique({
             where: { uid },
             include: { company: true },
           })
-        } else {
+        } catch(error) {
+          console.log(error)
           return null
+
         }
       },
     })
@@ -66,27 +59,21 @@ export const UserMutation = extendType({
   type: 'Mutation',
   definition(t) {
     t.field('signupUser', {
-      type: AuthUserObject,
+      type: UserObject,
       args: {
         companyId: nonNull(intArg()),
         name: nonNull(stringArg()),
-        token: nonNull(stringArg()),
       },
-      async resolve(root, args, { prisma }) {
+      async resolve(root, args, { prisma, token }) {
         try {
-          const { token: t, name, companyId } = args
-          const token = await admin.auth().createSessionCookie(t, { expiresIn: FIREBASE_EXPIRES_IN })
-          const { uid, email } = await admin.auth().verifySessionCookie(token, true)
+          const { name, companyId } = args
+          const { uid, email } = await admin.auth().verifyIdToken(token)
           await prisma.userSignupRequest.deleteMany({
             where: { email }
           })
-          const res = await prisma.user.create({
+          return prisma.user.create({
             data: { uid, email, name, companyId, admin: false }
           })
-          return {
-            ...res,
-            token
-          }
         } catch(error) {
           console.log(error)
           return null
@@ -94,21 +81,13 @@ export const UserMutation = extendType({
       },
     })
     t.field('signinUser', {
-      type: AuthUserObject,
-      args: {
-        token: nonNull(stringArg()),
-      },
-      async resolve(root, args, { prisma }) {
+      type: UserObject,
+      async resolve(root, args, { prisma, token }) {
         try {
-          const token = await admin.auth().createSessionCookie(args?.token, { expiresIn: FIREBASE_EXPIRES_IN })
-          const { uid } = await admin.auth().verifySessionCookie(token, true)
-          const res = await prisma.user.findUnique({
+          const { uid } = await admin.auth().verifyIdToken(token)
+          return prisma.user.findUnique({
             where: { uid }
           })
-          return {
-            ...res,
-            token
-          }
         } catch(error) {
           console.log(error)
           return null

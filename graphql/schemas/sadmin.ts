@@ -37,14 +37,15 @@ export const SadminQuery = extendType({
   definition(t) {
     t.field('sadmin', {
       type: SadminUserObject,
-      async resolve(_root, _args, { prisma, sadmin }) {
-        if (!sadmin) {
-          return null
+      async resolve(_root, _args, { prisma, token }) {
+        try {
+          const { uid } = await admin.auth().verifyIdToken(token)
+          return prisma.sadmin.findUnique({
+            where: { uid }
+          })
+        } catch(error) {
+
         }
-        const { uid } = await admin.auth().verifySessionCookie(sadmin, true)
-        return prisma.sadmin.findUnique({
-          where: { uid }
-        })
       },
     })
   },
@@ -55,20 +56,12 @@ export const SadminMutation = extendType({
   definition(t) {
     t.field('signupSadmin', {
       type: AuthSadminUserObject,
-      args: {
-        token: nonNull(stringArg()),
-      },
-      async resolve(root, args, { prisma }) {
+      async resolve(root, args, { prisma, token }) {
         try {
-          const token = await admin.auth().createSessionCookie(args?.token, { expiresIn: FIREBASE_EXPIRES_IN })
-          const { uid, email } = await admin.auth().verifySessionCookie(token, true)
-          const res = await prisma.sadmin.create({
+          const { uid, email } = await admin.auth().verifyIdToken(token)
+          return prisma.sadmin.create({
             data: { uid, email }
           })
-          return {
-            ...res,
-            token
-          }
         } catch(error) {
           console.log(error)
           return null
@@ -77,21 +70,12 @@ export const SadminMutation = extendType({
     })
     t.field('signinSadmin', {
       type: AuthSadminUserObject,
-      args: {
-        token: nonNull(stringArg()),
-      },
-      async resolve(root, args, { prisma }) {
+      async resolve(root, args, { prisma, token }) {
         try {
-          const token = await admin.auth().createSessionCookie(args?.token, { expiresIn: FIREBASE_EXPIRES_IN })
-          const { uid } = await admin.auth().verifySessionCookie(token, true)
-          const res = await prisma.sadmin.findUnique({
+          const { uid } = await admin.auth().verifyIdToken(token)
+          return prisma.sadmin.findUnique({
             where: { uid }
           })
-          if (!res) return null
-          return {
-            ...res,
-            token
-          }
         } catch(error) {
           console.error(error)
           return null

@@ -1,4 +1,4 @@
-import { makeSchema } from 'nexus'
+import { makeSchema, fieldAuthorizePlugin } from 'nexus'
 import { join } from 'path'
 import * as types from './schemas'
 
@@ -20,4 +20,7 @@ export const schema = makeSchema({
       },
     ],
   },
+  plugins: [
+    fieldAuthorizePlugin()
+  ]
 })

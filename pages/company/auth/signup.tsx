@@ -9,9 +9,9 @@ import { NOOKIES_EXPIRES_IN } from '../../../constants'
 import { LayoutSadminAuth } from 'components/LayoutSadminAuth/LayoutSadminAuth'
 
 const SIGNUP_COMPANY = gql`
-  mutation SignupCompany($token: String!, $name: String!, $companyName: String!) {
-    signupCompany(token: $token, name: $name companyName: $companyName) {
-      id email token
+  mutation SignupCompany($name: String!, $companyName: String!) {
+    signupCompany(name: $name companyName: $companyName) {
+      id email
     }
   }
 `;
@@ -46,19 +46,15 @@ const Page: React.FC<Props> = ({ data }) => {
     try {
       const res = await createUserWithEmailAndPassword(getAuth(), items.email, items.password)
       if (res) {
-        const token = await res.user.getIdToken()
         const { data: { signupCompany: u } } = await signupCompany({
           variables: { 
             name: items.name,
-            companyName: items.companyName,
-            token
+            companyName: items.companyName
           }
         })
-        setCookie(null, 'user', u?.token, {
-          maxAge: NOOKIES_EXPIRES_IN,
-          path: '/',
-        })
-        location.href = '/mypage'
+        if (u) {
+          location.href = '/mypage'
+        }
       }
     } catch (error) {
       console.error(error)

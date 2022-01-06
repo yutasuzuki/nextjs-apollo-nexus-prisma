@@ -57,11 +57,9 @@ const Page: React.FC<Props> = ({ data }) => {
         const { data: { signinUser: u } } = await signinUser({
           variables: { token }
         })
-        setCookie(null, 'user', u?.token, {
-          maxAge: NOOKIES_EXPIRES_IN,
-          path: '/',
-        })
-        location.href = '/mypage'
+        if (u) {
+          location.href = '/mypage'
+        }
       }
     } catch (error) {
       console.error(error)

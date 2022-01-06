@@ -1,6 +1,5 @@
 import { ApolloClient, createHttpLink, InMemoryCache } from '@apollo/client'
 import { setContext } from '@apollo/client/link/context'
-import { parseCookies } from 'nookies'
 import { getAuth } from 'firebase/auth'
 
 const getAuthToken = () => {
@@ -25,22 +24,13 @@ const httpLink = createHttpLink({
   uri: '/api/graphql',
 })
 
-const authLink = setContext((_, ctx) => {
-  const cookie = parseCookies()
-  const headers: { sadmin?: string, user?: string } = {}
-
-  if (cookie.sadmin) {
-    headers.sadmin = cookie.sadmin
-  }
-
-  if (cookie.user) {
-    headers.user = cookie.user
-  }
+const authLink = setContext(async (_, ctx) => {
+  const token = await getAuthToken()
 
   return {
     headers: {
       ...ctx?.headers,
-      ...headers
+      token
     }
   }
 })

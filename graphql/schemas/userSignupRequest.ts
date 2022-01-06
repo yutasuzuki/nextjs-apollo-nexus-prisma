@@ -42,7 +42,6 @@ export const SignupRequestStatus = objectType({
   }
 })
 
-
 export const UserSignupRequestQuery = extendType({
   type: 'Query',
   definition(t) {
@@ -62,6 +61,7 @@ export const UserSignupRequestQuery = extendType({
             }
           })
         } catch (error) {
+          console.log(error)
           return null
         }
       },
@@ -77,6 +77,7 @@ export const UserSignupRequestQuery = extendType({
             }
           })
         } catch (error) {
+          console.log(error)
           return []
         }
       },
@@ -92,7 +93,7 @@ export const UserSignupRequestMutation = extendType({
       args: {
         email: nonNull(stringArg()),
       },
-      async resolve(root, args, { prisma, user, gqlClient }) {
+      async resolve(root, args, { prisma, gqlClient }) {
         try {
           const u = await prisma.user.findUnique({
             where: {

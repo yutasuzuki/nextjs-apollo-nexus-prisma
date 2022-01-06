@@ -62,19 +62,15 @@ const Page: React.FC<Props> = ({ data, user }) => {
     try {
       const res = await createUserWithEmailAndPassword(getAuth(), user.email, items.password)
       if (res) {
-        const token = await res.user.getIdToken()
         const { data: { signupUser: u } } = await signupUser({
           variables: {
             name: items.name,
-            companyId: user.company?.id,
-            token
+            companyId: user.company.id
           }
         })
-        setCookie(null, 'user', u?.token, {
-          maxAge: NOOKIES_EXPIRES_IN,
-          path: '/',
-        })
-        location.href = '/mypage'
+        if (u) {
+          location.href = '/mypage'
+        }
       }
     } catch (error) {
       console.error(error)

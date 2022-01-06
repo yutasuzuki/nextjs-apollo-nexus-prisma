@@ -2,8 +2,6 @@ import React, { useState, useCallback } from 'react'
 import Link from 'next/link'
 import { createUserWithEmailAndPassword, getAuth } from 'firebase/auth'
 import { gql, useMutation } from '@apollo/client'
-import { setCookie } from 'nookies'
-import { NOOKIES_EXPIRES_IN } from '../../../constants'
 import { withSadmin, SadminProps } from 'libs/withSadmin'
 import { LayoutSadminAuth } from 'components/LayoutSadminAuth/LayoutSadminAuth'
 import commonStyles from 'styles/commonStyles.module.css'
@@ -11,8 +9,8 @@ import formStyles from 'styles/formStyles.module.css'
 import utilStyles from 'styles/utilStyles.module.css'
 
 const SIGNUP_SADMIN = gql`
-  mutation SignupSadmin($token: String!) {
-    signupSadmin(token: $token) { id uid email token }
+  mutation SignupSadmin {
+    signupSadmin { id uid email }
   }
 `;
 
@@ -41,15 +39,10 @@ const Page: React.FC<Props> = ({ data }) => {
     try {
       const res = await createUserWithEmailAndPassword(getAuth(), items.email, items.password)
       if (res) {
-        const token = await res.user.getIdToken()
-        const { data: { signupSadmin: sadmin } } = await signupSadmin({
-          variables: { token }
-        })
-        setCookie(null, 'sadmin', sadmin.token, {
-          maxAge: NOOKIES_EXPIRES_IN,
-          path: '/',
-        })
-        location.href = '/sadmin'
+        const { data: { signupSadmin: sadmin } } = await signupSadmin()
+        if (sadmin) {
+          location.href = '/sadmin'
+        }
       }
     } catch (error) {
       console.error(error)

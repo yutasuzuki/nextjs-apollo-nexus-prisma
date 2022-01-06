@@ -1,10 +1,10 @@
 import React from 'react'
+import { Sadmin } from '@prisma/client'
 import { gql, useQuery } from '@apollo/client'
-import { Sadmin } from 'nexus-prisma'
 import { graphql, DataProps } from '@apollo/client/react/hoc'
 
 export interface SadminProps extends DataProps<{
-  sadmin: typeof Sadmin
+  sadmin: Sadmin
 }> {}
 
 export const SADMIN_QUERY = gql`
@@ -18,5 +18,5 @@ export const SADMIN_QUERY = gql`
 `;
 
 export const withSadmin = (Components: React.FC) => {
-  return graphql<{}, { sadmin: typeof Sadmin }>(SADMIN_QUERY)(Components)
+  return graphql<{}, { sadmin: Sadmin }>(SADMIN_QUERY)(Components)
 }

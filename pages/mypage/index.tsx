@@ -6,6 +6,7 @@ import { LayoutMypage } from 'components/LayoutMypage/LayoutMypage'
 interface Props extends MypageProps {}
 
 const Page: React.FC<Props> = ({ data }) => {
+
   return (
       <LayoutMypage data={data} title="ダッシュボード">
         <div>
