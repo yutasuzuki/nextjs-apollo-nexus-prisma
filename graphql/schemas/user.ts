@@ -1,6 +1,8 @@
 import { objectType, extendType, stringArg, nonNull, interfaceType, intArg } from 'nexus'
 import admin from 'libs/firebase-admin'
+import { userAuthMiddleware } from 'graphql/middlewares/authMiddleware'
 import { CompanyObject } from './company'
+import { getUser } from 'graphql/utils/getUser'
 
 const IUser = interfaceType({
   name: 'IUser',
@@ -37,18 +39,23 @@ export const UserQuery = extendType({
   definition(t) {
     t.field('user', {
       type: UserObject,
+      authorize: userAuthMiddleware,
       async resolve(_root, _args, { prisma, token }) {
         try {
-          const { uid } = await admin.auth().verifyIdToken(token)
-          if (!uid) return null
-          return prisma.user.findUnique({
-            where: { uid },
-            include: { company: true },
-          })
+          return getUser({ prisma, token })
         } catch(error) {
           console.log(error)
           return null
-
+        }
+      },
+    })
+    t.list.field('companyUsers', {
+      type: UserObject,
+      async resolve(_root, _args, { prisma }) {
+        try {
+          return prisma.user.findMany()
+        } catch(error) {
+          return []
         }
       },
     })
@@ -84,10 +91,7 @@ export const UserMutation = extendType({
       type: UserObject,
       async resolve(root, args, { prisma, token }) {
         try {
-          const { uid } = await admin.auth().verifyIdToken(token)
-          return prisma.user.findUnique({
-            where: { uid }
-          })
+          return getUser({ prisma, token })
         } catch(error) {
           console.log(error)
           return null

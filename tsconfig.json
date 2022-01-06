@@ -17,8 +17,11 @@
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "typeRoots": ["./interfaces"],
-    "jsx": "preserve"
+    "typeRoots": [
+      "./interfaces"
+    ],
+    "jsx": "preserve",
+    "incremental": true
   },
   "include": [
     "next-env.d.ts",

@@ -3,6 +3,7 @@ import { useRouter } from 'next/router'
 import Head from 'next/head'
 import Link from 'next/link'
 import styles from './LayoutMypage.module.css'
+import { signOut, getAuth } from 'firebase/auth'
 import { MypageProps } from 'libs/withMypage'
 
 interface Props {
@@ -20,7 +21,8 @@ export const LayoutMypage: React.FC<Props> = ({ title = '', data, children }) =>
     }
   }, [loading, user])
 
-  const _handleOnSignout = useCallback(() => {
+  const _handleOnSignout = useCallback(async () => {
+    await signOut(getAuth())
     location.href = '/mypage/auth/signin'
   }, [])
 

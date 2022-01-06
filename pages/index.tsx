@@ -1,10 +1,21 @@
 import React from 'react'
 import Link from 'next/link'
-import { withMypage } from 'libs/withMypage'
+import { withMypage, MypageProps } from 'libs/withMypage'
+import { gql, useMutation, useQuery } from '@apollo/client'
 
-interface Props {}
+const QUERY = gql`
+  query {
+    companyUsers {
+      id
+    }
+  }
+`;
 
-const Page: React.FC<Props> = (props) => {
+
+interface Props extends MypageProps {}
+
+const Page: React.FC<Props> = ({ data }) => {
+  const res = useQuery(QUERY)
 
   return (
     <div>

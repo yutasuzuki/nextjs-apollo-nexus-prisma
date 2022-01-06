@@ -1,7 +1,7 @@
 import React from 'react'
 import { gql, useQuery, BaseQueryOptions } from '@apollo/client'
 // import { User } from 'nexus-prisma'
-import { User } from '@prisma/client'
+import { User } from 'interfaces'
 import { USER_QUERY } from 'graphql/queries'
 import { graphql, DataProps } from '@apollo/client/react/hoc'
 

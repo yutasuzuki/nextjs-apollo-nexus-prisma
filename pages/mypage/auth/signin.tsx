@@ -12,8 +12,8 @@ import formStyles from 'styles/formStyles.module.css'
 import utilStyles from 'styles/utilStyles.module.css'
 
 const SIGNIN_USER = gql`
-  mutation SigninUser($token: String!) {
-    signinUser(token: $token) { id uid email token }
+  mutation SigninUser {
+    signinUser { id uid email }
   }
 `;
 
@@ -53,10 +53,7 @@ const Page: React.FC<Props> = ({ data }) => {
     try {
       const res = await signInWithEmailAndPassword(getAuth(), items.email, items.password)
       if (res) {
-        const token = await res.user.getIdToken()
-        const { data: { signinUser: u } } = await signinUser({
-          variables: { token }
-        })
+        const { data: { signinUser: u } } = await signinUser()
         if (u) {
           location.href = '/mypage'
         }

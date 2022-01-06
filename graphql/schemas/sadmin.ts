@@ -1,6 +1,6 @@
 import { objectType, extendType, stringArg, nonNull, interfaceType } from 'nexus'
-import admin from "libs/firebase-admin"
-import { FIREBASE_EXPIRES_IN } from '../../constants'
+import admin from 'libs/firebase-admin'
+import { sadminAuthMiddleware } from 'graphql/middlewares/authMiddleware'
 
 const ISadminUser = interfaceType({
   name: 'ISadminUser',
@@ -37,6 +37,7 @@ export const SadminQuery = extendType({
   definition(t) {
     t.field('sadmin', {
       type: SadminUserObject,
+      authorize: sadminAuthMiddleware,
       async resolve(_root, _args, { prisma, token }) {
         try {
           const { uid } = await admin.auth().verifyIdToken(token)

@@ -71,7 +71,7 @@ export const CompanyMutation = extendType({
       async resolve(root, args, { prisma, token }) {
         try {
           const { name, companyName } = args
-          const { uid, email } = await admin.auth().verifySessionCookie(token, true)
+          const { uid, email } = await admin.auth().verifyIdToken(token)
           const company = await prisma.company.create({
             data: {
               email,

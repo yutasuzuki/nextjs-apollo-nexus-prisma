@@ -2,14 +2,14 @@ import { ApolloClient, createHttpLink, InMemoryCache } from '@apollo/client'
 import { setContext } from '@apollo/client/link/context'
 import { getAuth } from 'firebase/auth'
 
-const getAuthToken = () => {
-		const auth = getAuth()
+type GetAuthToken = () => Promise<string>
+const getAuthToken: GetAuthToken = () => {
     return new Promise((resolve, reject) => {
-      if (auth.currentUser !== null) {
-        auth.currentUser.getIdToken()
+      if (getAuth().currentUser !== null) {
+        getAuth().currentUser.getIdToken()
           .then(data => resolve(data))
       } else {
-        auth.onAuthStateChanged((user) => {
+        getAuth().onAuthStateChanged((user) => {
           if (user) {
             user.getIdToken().then(data => resolve(data));
           } else {
@@ -24,15 +24,33 @@ const httpLink = createHttpLink({
   uri: '/api/graphql',
 })
 
-const authLink = setContext(async (_, ctx) => {
-  const token = await getAuthToken()
-
-  return {
+let token; 
+const authLink = setContext((_, ctx) => {
+  if (token) return {
     headers: {
-      ...ctx?.headers,
+      ...ctx.headers,
       token
     }
   }
+  return new Promise(async (resolve, reject) => {
+    await getAuthToken().then((userToken) => {
+      console.log(userToken)
+      token = userToken
+      resolve({
+        headers: {
+          ...ctx.headers,
+          token
+        }
+      })
+    }).catch(() => {
+      reject({
+        headers: {
+          ...ctx.headers,
+          token: null
+        }
+      })
+    })
+  })
 })
 
 export const client = new ApolloClient({

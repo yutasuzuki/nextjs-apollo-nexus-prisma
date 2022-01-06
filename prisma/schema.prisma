@@ -33,6 +33,7 @@ model UserSignupRequest {
   hash       String    @unique
   createdAt DateTime  @default(now()) @map(name: "created_at")
   updatedAt DateTime  @updatedAt @map(name: "updated_at")
+  deletedAt     DateTime?    @map(name: "deleted_at")
 
   @@map(name: "user_signup_request")
 }
@@ -60,7 +61,7 @@ model Sadmin {
   email         String
   createdAt     DateTime  @default(now()) @map(name: "created_at")
   updatedAt     DateTime  @updatedAt @map(name: "updated_at")
-  deletedAt     DateTime? @map(name: "deleted_at")
+  deletedAt     DateTime?    @map(name: "deleted_at")
 
   @@map(name: "sadmin")
 }
