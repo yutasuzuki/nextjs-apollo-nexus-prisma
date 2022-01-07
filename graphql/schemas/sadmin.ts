@@ -1,5 +1,6 @@
 import { objectType, extendType, stringArg, nonNull, interfaceType } from 'nexus'
 import admin from 'libs/firebase-admin'
+import { getSadmin } from 'graphql/utils/getSadmin'
 import { sadminAuthMiddleware } from 'graphql/middlewares/authMiddleware'
 
 const ISadminUser = interfaceType({
@@ -40,12 +41,10 @@ export const SadminQuery = extendType({
       authorize: sadminAuthMiddleware,
       async resolve(_root, _args, { prisma, token }) {
         try {
-          const { uid } = await admin.auth().verifyIdToken(token)
-          return prisma.sadmin.findUnique({
-            where: { uid }
-          })
+          return getSadmin({ prisma, token })
         } catch(error) {
-
+          console.log(error)
+          return null
         }
       },
     })
@@ -73,10 +72,7 @@ export const SadminMutation = extendType({
       type: AuthSadminUserObject,
       async resolve(root, args, { prisma, token }) {
         try {
-          const { uid } = await admin.auth().verifyIdToken(token)
-          return prisma.sadmin.findUnique({
-            where: { uid }
-          })
+          return getSadmin({ prisma, token })
         } catch(error) {
           console.error(error)
           return null

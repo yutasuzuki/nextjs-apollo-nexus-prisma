@@ -21,8 +21,6 @@ interface Props extends SadminProps {}
 const Page: React.FC<Props> = ({ data }) => {
   const { loading, error, data: res, refetch } = useQuery<{ companies: Company[] }>(QUERY)
 
-  console.log(res)
-
   const companyList = useMemo(() => {
     return res?.companies.map((company, index) => {
       return (

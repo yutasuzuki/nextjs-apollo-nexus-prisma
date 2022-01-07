@@ -73,7 +73,8 @@ export const UserSignupRequestQuery = extendType({
           const { user } = await gqlClient.request<{ user: User }>(USER_QUERY)
           return prisma.userSignupRequest.findMany({
             where: {
-              companyId: user.companyId
+              companyId: user.companyId,
+              deletedAt: null
             }
           })
         } catch (error) {

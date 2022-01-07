@@ -1,10 +1,8 @@
 import React, { useState, useCallback } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
-import { createUserWithEmailAndPassword, getAuth } from 'firebase/auth'
+import { createUserWithEmailAndPassword, getAuth, signOut } from 'firebase/auth'
 import { gql, useMutation } from '@apollo/client'
-import { setCookie } from 'nookies'
-import { NOOKIES_EXPIRES_IN } from '../../../constants'
 import { withMypage, MypageProps } from 'libs/withMypage'
 import { LayoutMypageAuth } from 'components/LayoutMypageAuth/LayoutMypageAuth'
 import { GetServerSideProps } from 'next'
@@ -13,8 +11,8 @@ import { GraphQLClient } from 'graphql-request'
 import { UserSignupRequest, Company } from '@prisma/client'
 
 const SIGNUP_USER = gql`
-  mutation SignupUser($name: String!, $token: String!, $companyId: Int!) {
-    signupUser(name: $name, token: $token, companyId: $companyId) { id uid email token }
+  mutation SignupUser($name: String!, $companyId: Int!) {
+    signupUser(name: $name, companyId: $companyId) { id uid email }
   }
 `;
 
@@ -34,17 +32,7 @@ const Page: React.FC<Props> = ({ data, user }) => {
     password: ''
   })
 
-  const [signupUser] = useMutation(SIGNUP_USER, {
-    onCompleted({ signupUser }) {
-      console.log(signupUser)
-      if (signupUser?.token) {
-        localStorage.setItem('user', signupUser.token)
-        router.push('/mypage')
-      } else {
-        localStorage.removeItem('user')
-      }
-    }
-  })
+  const [signupUser] = useMutation(SIGNUP_USER)
 
   const _handleOnChange = useCallback((e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     e.preventDefault()
@@ -70,6 +58,8 @@ const Page: React.FC<Props> = ({ data, user }) => {
         })
         if (u) {
           location.href = '/mypage'
+        } else {
+          await signOut(getAuth())
         }
       }
     } catch (error) {

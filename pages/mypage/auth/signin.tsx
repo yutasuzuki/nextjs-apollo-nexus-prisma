@@ -2,9 +2,7 @@ import React, { useState, useCallback } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { gql, useMutation } from '@apollo/client'
-import { signInWithEmailAndPassword, getAuth } from 'firebase/auth'
-import { setCookie } from 'nookies'
-import { NOOKIES_EXPIRES_IN } from '../../../constants'
+import { signInWithEmailAndPassword, getAuth, signOut } from 'firebase/auth'
 import { withMypage, MypageProps } from 'libs/withMypage'
 import { LayoutMypageAuth } from 'components/LayoutMypageAuth/LayoutMypageAuth'
 import commonStyles from 'styles/commonStyles.module.css'
@@ -56,6 +54,8 @@ const Page: React.FC<Props> = ({ data }) => {
         const { data: { signinUser: u } } = await signinUser()
         if (u) {
           location.href = '/mypage'
+        } else {
+          await signOut(getAuth())
         }
       }
     } catch (error) {

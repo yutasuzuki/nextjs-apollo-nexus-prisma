@@ -1,11 +1,9 @@
 import React, { useState, useCallback } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
-import { createUserWithEmailAndPassword, getAuth } from 'firebase/auth'
+import { createUserWithEmailAndPassword, getAuth, signOut } from 'firebase/auth'
 import { gql, useMutation } from '@apollo/client'
-import { setCookie } from 'nookies'
 import { withSadmin, SadminProps } from 'libs/withSadmin'
-import { NOOKIES_EXPIRES_IN } from '../../../constants'
 import { LayoutSadminAuth } from 'components/LayoutSadminAuth/LayoutSadminAuth'
 
 const SIGNUP_COMPANY = gql`
@@ -54,6 +52,8 @@ const Page: React.FC<Props> = ({ data }) => {
         })
         if (u) {
           location.href = '/mypage'
+        } else {
+          await signOut(getAuth())
         }
       }
     } catch (error) {

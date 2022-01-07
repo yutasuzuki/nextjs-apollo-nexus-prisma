@@ -1,13 +1,12 @@
 import { Context } from 'graphql/context'
 import admin from 'libs/firebase-admin'
 
-type AuthMiddleware = (root: {}, arg:any, context: Context) => Promise<boolean> | boolean
+type AuthMiddleware = (root: {}, arg: any, context: Context) => Promise<boolean>
 
 export const userAuthMiddleware: AuthMiddleware = async (root, args, { prisma, token }) => {
   try {
     const { uid } = await admin.auth().verifyIdToken(token)
     const result = await prisma.user.findUnique({ where: { uid } })
-    console.log('result', result)
     return !!result
   } catch(e) {
     return false
@@ -18,7 +17,6 @@ export const sadminAuthMiddleware: AuthMiddleware = async (root, args, { prisma,
   try {
     const { uid } = await admin.auth().verifyIdToken(token)
     const result = await prisma.sadmin.findUnique({ where: { uid } })
-    console.log('result', result)
     return !!result
   } catch(e) {
     return false

@@ -75,8 +75,9 @@ export const UserMutation = extendType({
         try {
           const { name, companyId } = args
           const { uid, email } = await admin.auth().verifyIdToken(token)
-          await prisma.userSignupRequest.deleteMany({
-            where: { email }
+          await prisma.userSignupRequest.update({
+            where: { email },
+            data: { deletedAt: new Date() }
           })
           return prisma.user.create({
             data: { uid, email, name, companyId, admin: false }

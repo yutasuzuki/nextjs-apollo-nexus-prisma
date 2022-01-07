@@ -1,4 +1,4 @@
-import { User } from "@prisma/client"
+import { User } from "interfaces"
 import { Context } from 'graphql/context'
 import admin from 'libs/firebase-admin'
 
