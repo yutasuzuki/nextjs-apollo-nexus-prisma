@@ -7,8 +7,8 @@ export class MailServiceClass {
       port: '465',
       secure: true,
       auth: {
-        user: process.env.GMAIL_ADDRESS,
-        pass: process.env.GMAIL_PASSWORD
+        user: process.env.MAIL_ADDRESS,
+        pass: process.env.MAIL_PASSWORD
       }
     }
     const mailData = {
