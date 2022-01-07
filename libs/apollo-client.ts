@@ -44,8 +44,8 @@ const authLink = setContext((_, ctx) => {
       token
     }
   }
-  return new Promise(async (resolve, reject) => {
-    await getAuthToken().then((userToken) => {
+  return new Promise((resolve, reject) => {
+    getAuthToken().then((userToken) => {
       token = userToken
       resolve({
         headers: {
