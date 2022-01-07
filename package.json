@@ -1,5 +1,5 @@
 {
-  "name": "nextjs-prisma-graphql",
+  "name": "nextjs-apollo-nexus-prisma",
   "version": "1.0.0",
   "scripts": {
     "dev": "next",
