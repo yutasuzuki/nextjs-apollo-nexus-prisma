@@ -1,5 +1,6 @@
 import { ApolloClient, createHttpLink, InMemoryCache } from '@apollo/client'
 import { setContext } from '@apollo/client/link/context'
+import { onError } from "@apollo/client/link/error"
 import { getAuth } from 'firebase/auth'
 
 type GetAuthToken = () => Promise<string>
@@ -24,7 +25,18 @@ const httpLink = createHttpLink({
   uri: '/api/graphql',
 })
 
-let token; 
+const errorLink = onError(({ graphQLErrors, networkError }) => {
+  if (graphQLErrors) {
+    graphQLErrors.map(({ message, locations, path }) =>
+      console.log(`[GraphQL エラー]: Message: ${message}, Location: ${locations}, Path: ${path}`)
+    )
+  }
+  if (networkError) {
+    console.log(`[ネットワークエラー]: ${networkError}`)
+  }
+})
+
+let token
 const authLink = setContext((_, ctx) => {
   if (token) return {
     headers: {
@@ -53,6 +65,6 @@ const authLink = setContext((_, ctx) => {
 })
 
 export const client = new ApolloClient({
-  link: authLink.concat(httpLink),
+  link: authLink.concat(errorLink).concat(httpLink),
   cache: new InMemoryCache(),
 })
