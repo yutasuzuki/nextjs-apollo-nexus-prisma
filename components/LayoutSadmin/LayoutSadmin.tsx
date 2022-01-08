@@ -1,6 +1,7 @@
 import React, { useEffect, useCallback } from 'react'
 import Head from 'next/head'
 import Link from 'next/link'
+import { signOut, getAuth } from 'firebase/auth'
 import styles from './LayoutSadmin.module.css'
 import { SadminProps } from 'libs/withSadmin'
 
@@ -18,7 +19,8 @@ export const LayoutSadmin: React.FC<Props> = ({ title = '', data, children }) =>
     }
   }, [loading, sadmin])
 
-  const _handleOnSignout = useCallback(() => {
+  const _handleOnSignout = useCallback(async () => {
+    await signOut(getAuth())
     location.href = '/sadmin/auth/signin'
   }, [])
 
