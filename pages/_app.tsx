@@ -1,8 +1,8 @@
 import Head from 'next/head'
 import { ApolloProvider } from '@apollo/client'
 import { AppProps } from 'next/app'
-import firebase from '../libs/firebase'
-import { client } from '../libs/apollo-client'
+import firebase from 'libs/firebase'
+import { client } from 'libs/apollo-client'
 
 firebase()
 
