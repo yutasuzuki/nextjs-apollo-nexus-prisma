@@ -36,7 +36,7 @@ const errorLink = onError(({ graphQLErrors, networkError }) => {
   }
 })
 
-let token
+let token: string = null
 const authLink = setContext((_, ctx) => {
   if (token) return {
     headers: {
@@ -54,6 +54,7 @@ const authLink = setContext((_, ctx) => {
         }
       })
     }).catch(() => {
+      token = null
       resolve({
         headers: {
           ...ctx.headers,
