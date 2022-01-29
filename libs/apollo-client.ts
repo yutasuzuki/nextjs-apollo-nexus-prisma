@@ -5,21 +5,21 @@ import { getAuth } from 'firebase/auth'
 
 type GetAuthToken = () => Promise<string>
 const getAuthToken: GetAuthToken = () => {
-    return new Promise((resolve, reject) => {
-      if (getAuth().currentUser !== null) {
-        getAuth().currentUser.getIdToken()
-          .then(data => resolve(data))
-      } else {
-        getAuth().onAuthStateChanged((user) => {
-          if (user) {
-            user.getIdToken().then(data => resolve(data));
-          } else {
-            reject(null);
-          }
-        });
-      }
-    });
-  }
+  return new Promise((resolve, reject) => {
+    if (getAuth().currentUser !== null) {
+      getAuth().currentUser.getIdToken()
+        .then(data => resolve(data))
+    } else {
+      getAuth().onAuthStateChanged((user) => {
+        if (user) {
+          user.getIdToken().then(data => resolve(data))
+        } else {
+          reject(null);
+        }
+      })
+    }
+  })
+}
 
 const httpLink = createHttpLink({
   uri: '/api/graphql',
@@ -44,7 +44,7 @@ const authLink = setContext((_, ctx) => {
       token
     }
   }
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve) => {
     getAuthToken().then((userToken) => {
       token = userToken
       resolve({
