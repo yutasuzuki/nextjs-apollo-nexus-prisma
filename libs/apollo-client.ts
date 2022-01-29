@@ -54,7 +54,7 @@ const authLink = setContext((_, ctx) => {
         }
       })
     }).catch(() => {
-      reject({
+      resolve({
         headers: {
           ...ctx.headers,
           token: null
