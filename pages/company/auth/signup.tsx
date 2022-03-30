@@ -59,7 +59,7 @@ const Page: React.FC<Props> = ({ data }) => {
     } catch (error) {
       console.error(error)
     }
-  }, [items])
+  }, [items, signupCompany])
 
   return (
     <div>

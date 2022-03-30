@@ -56,7 +56,7 @@ const Page: React.FC<Props> = ({ data }) => {
     addUserSignupRequest({
       variables: { email }
     })
-  }, [email])
+  }, [email, addUserSignupRequest])
 
   const companyUserlist = useMemo(() => {
     if (!res) return []

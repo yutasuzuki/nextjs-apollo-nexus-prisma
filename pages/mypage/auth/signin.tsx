@@ -61,7 +61,7 @@ const Page: React.FC<Props> = ({ data }) => {
     } catch (error) {
       console.error(error)
     }
-  }, [items])
+  }, [items, signinUser])
 
   return (
     <LayoutMypageAuth data={data}>

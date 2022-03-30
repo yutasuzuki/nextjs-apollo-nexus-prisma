@@ -47,7 +47,7 @@ const Page: React.FC<Props> = ({ data }) => {
     } catch (error) {
       console.error(error)
     }
-  }, [items])
+  }, [items, signupSadmin])
 
   return (
     <LayoutSadminAuth data={data}>
