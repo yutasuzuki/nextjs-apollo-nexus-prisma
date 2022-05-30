@@ -36,25 +36,16 @@ const errorLink = onError(({ graphQLErrors, networkError }) => {
   }
 })
 
-let token: string = null
 const authLink = setContext((_, ctx) => {
-  if (token) return {
-    headers: {
-      ...ctx.headers,
-      token
-    }
-  }
   return new Promise((resolve) => {
     getAuthToken().then((userToken) => {
-      token = userToken
       resolve({
         headers: {
           ...ctx.headers,
-          token
+          token: userToken
         }
       })
     }).catch(() => {
-      token = null
       resolve({
         headers: {
           ...ctx.headers,

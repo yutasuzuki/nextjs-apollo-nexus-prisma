@@ -13,7 +13,6 @@ function App({ Component, pageProps }: AppProps) {
     <ApolloProvider client={client}>
       <Head>
         <meta name="robots" content="noindex" />
-        {/* {process.env.SAUNATIME_PASS_ENV !== 'production' && <meta name="robots" content="noindex" />} */}
         <meta name="viewport" content="initial-scale=1.0, width=device-width" />
       </Head>
       <Component {...pageProps} />
